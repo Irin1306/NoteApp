@@ -24,11 +24,11 @@ var NotesItems: [[String: Any]] {
     }
 }
 
-func addItem(title: String, description: String, index: Int, image: Any?) {
+func addItem(title: String, description: String, index: Int, image: String) {     //Any?) {
     if index == -1 {
-        NotesItems.append(["Title": title, "Description": description, "image": image as Any ])
+        NotesItems.append(["Title": title, "Description": description, "image": image])     //image as Any ])
     } else {
-        NotesItems[index] = ["Title": title, "Description": description, "image": image as Any]
+        NotesItems[index] = ["Title": title, "Description": description, "image": image]      //image as Any]
     }
     
 }

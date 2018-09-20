@@ -4,6 +4,7 @@
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -19,22 +20,22 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="left" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" textLabel="xVU-bp-04R" detailTextLabel="zQU-y3-ecl" rowHeight="71" style="IBUITableViewCellStyleSubtitle" id="Mra-Xh-1XP">
-                                <rect key="frame" x="0.0" y="28" width="375" height="71"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="left" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" textLabel="xVU-bp-04R" detailTextLabel="zQU-y3-ecl" rowHeight="97" style="IBUITableViewCellStyleSubtitle" id="Mra-Xh-1XP">
+                                <rect key="frame" x="0.0" y="28" width="375" height="97"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Mra-Xh-1XP" id="9Tc-dk-mZO">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="70.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="96.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="xVU-bp-04R">
-                                            <rect key="frame" x="16" y="15" width="33.5" height="20.5"/>
+                                            <rect key="frame" x="16" y="28" width="33.5" height="20.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Detail" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="zQU-y3-ecl">
-                                            <rect key="frame" x="16" y="38.5" width="33" height="14.5"/>
+                                            <rect key="frame" x="16" y="51.5" width="33" height="14.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                             <nil key="textColor"/>
@@ -56,6 +57,9 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <refreshControl key="refreshControl" opaque="NO" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="uIL-Yo-CyC">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </refreshControl>
                     <connections>
                         <segue destination="Alf-c5-2qd" kind="show" identifier="makingTransition" id="Qlv-64-3xl"/>
                     </connections>
@@ -64,7 +68,7 @@
             </objects>
             <point key="canvasLocation" x="2024.8" y="42.728635682158924"/>
         </scene>
-        <!--Edit-->
+        <!--Edit View Controller-->
         <scene sceneID="nHk-bc-7uL">
             <objects>
                 <viewController id="Alf-c5-2qd" customClass="EditViewController" customModule="NoteApp" customModuleProvider="target" sceneMemberID="viewController">
@@ -112,6 +116,7 @@
                             <constraint firstItem="Sr2-4u-aam" firstAttribute="leading" secondItem="pCT-Ss-PSl" secondAttribute="leading" constant="67" id="G2b-8k-aP7"/>
                             <constraint firstItem="uIG-TP-DRs" firstAttribute="trailing" secondItem="Ozj-h5-adr" secondAttribute="trailingMargin" id="GwN-nS-GHh"/>
                             <constraint firstItem="uIG-TP-DRs" firstAttribute="top" secondItem="pCT-Ss-PSl" secondAttribute="top" constant="25" id="NgL-tn-F6p"/>
+                            <constraint firstItem="Vue-vG-nSM" firstAttribute="leading" secondItem="pCT-Ss-PSl" secondAttribute="leading" constant="16" id="QoW-Xg-bps"/>
                             <constraint firstItem="pCT-Ss-PSl" firstAttribute="trailing" secondItem="Sr2-4u-aam" secondAttribute="trailing" constant="68" id="SfK-ra-lQH"/>
                             <constraint firstItem="rnd-AE-sAT" firstAttribute="leading" secondItem="pCT-Ss-PSl" secondAttribute="leading" constant="16" id="XQ2-aO-ab0"/>
                             <constraint firstItem="Vue-vG-nSM" firstAttribute="leading" secondItem="pCT-Ss-PSl" secondAttribute="leading" constant="16" id="hld-tt-t15"/>
@@ -121,7 +126,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="pCT-Ss-PSl"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Edit" id="WEt-9t-t0P">
+                    <navigationItem key="navigationItem" id="WEt-9t-t0P">
                         <barButtonItem key="rightBarButtonItem" systemItem="done" id="Twh-Ak-dgt">
                             <connections>
                                 <action selector="pushEditAction:" destination="Alf-c5-2qd" id="jx1-J5-g1w"/>

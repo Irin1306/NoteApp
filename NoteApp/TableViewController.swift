@@ -46,8 +46,7 @@ class TableViewController: UITableViewController {
         
         tableView.tableFooterView = UIView()
         tableView.backgroundColor = UIColor.groupTableViewBackground
- 
-
+        
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -86,10 +85,29 @@ class TableViewController: UITableViewController {
         let currentItem = NotesItems[indexPath.row]
         cell.textLabel?.text = currentItem["Title"] as? String
         cell.detailTextLabel?.text = currentItem["Description"] as? String
-        if let imageData = currentItem["image"] as? Data {
+        if let imageData = currentItem["image"] as? String {  //Data {
             if !imageData.isEmpty {
-                cell.imageView?.image = UIImage(data: imageData)
+                //cell.imageView?.image = UIImage(data: imageData)
                
+                
+                cell.imageView?.image = getSavedImage(imageData)
+                cell.imageView?.translatesAutoresizingMaskIntoConstraints = false
+                //don't work 
+                cell.imageView?.frame = CGRect(origin: (cell.imageView?.frame.origin)!, size: CGSize(
+                    width: 27,
+                    height: (cell.imageView?.frame.size.height)!
+                ))
+                
+                cell.imageView?.contentMode = .scaleAspectFit;
+                
+                
+                
+                
+                /* if cell.imageView != nil {
+                    cellImageViewConstraints(cell.imageView!)
+                    
+                }*/
+                
             }
             
         }
@@ -100,9 +118,12 @@ class TableViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         print(indexPath.row)
         var item = NotesItems[indexPath.row]
+        print(item)
+        
         item["index"] = indexPath.row
+        print(item)
         performSegue(withIdentifier: "makingTransition", sender: item)
-       
+        
     }
     
     // Override to support conditional editing of the table view.
@@ -155,5 +176,20 @@ class TableViewController: UITableViewController {
         svc.note = sender as! [String: Any]        
     }
     
-
+    func getSavedImage(_ named: String) -> UIImage? {
+        if let dir = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false) {
+            print(named)
+            return UIImage(contentsOfFile: URL(fileURLWithPath: dir.absoluteString).appendingPathComponent(named).path)        
+        
+        }
+        return nil
+    }
+    
+    func cellImageViewConstraints(_ imageView: UIImageView) {
+        imageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+    }
+    
 }
