@@ -14,6 +14,7 @@
 		CE141BF0215114F00004153C /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE141BEF215114F00004153C /* TableViewController.swift */; };
 		CE141BF4215115C90004153C /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE141BF3215115C90004153C /* Model.swift */; };
 		CE141BF621512BA00004153C /* EditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE141BF521512BA00004153C /* EditViewController.swift */; };
+		CEDA3486215A94300059060C /* MainNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDA3485215A94300059060C /* MainNavigationController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		CE141BEF215114F00004153C /* TableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 		CE141BF3215115C90004153C /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		CE141BF521512BA00004153C /* EditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditViewController.swift; sourceTree = "<group>"; };
+		CEDA3485215A94300059060C /* MainNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainNavigationController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +68,7 @@
 				CE141BE42151129D0004153C /* Assets.xcassets */,
 				CE141BE62151129D0004153C /* LaunchScreen.storyboard */,
 				CE141BE92151129D0004153C /* Info.plist */,
+				CEDA3485215A94300059060C /* MainNavigationController.swift */,
 			);
 			path = NoteApp;
 			sourceTree = "<group>";
@@ -141,6 +144,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEDA3486215A94300059060C /* MainNavigationController.swift in Sources */,
 				CE141BF621512BA00004153C /* EditViewController.swift in Sources */,
 				CE141BF4215115C90004153C /* Model.swift in Sources */,
 				CE141BDE2151129B0004153C /* AppDelegate.swift in Sources */,

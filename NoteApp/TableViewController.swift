@@ -10,13 +10,16 @@ import UIKit
 
 class TableViewController: UITableViewController {
 
-    
+    //let editvc = EditViewController()
     
     @IBAction func pushAddAction(_ sender: Any) {
         
-        
         performSegue(withIdentifier: "makingTransition", sender: ["index": -1])
-       /*
+        
+        //editvc.note = ["index": -1]
+        //navigationController?.pushViewController(editvc, animated: true)
+        
+        /*
         let alertController = UIAlertController(title: "Create new note", message: nil, preferredStyle: .alert)
         alertController.addTextField { (textField) in
             textField.placeholder = "Title"
@@ -78,8 +81,7 @@ class TableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        
-        
+       // let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! MyTableCell
 
         // Configure the cell...
         let currentItem = NotesItems[indexPath.row]
@@ -88,26 +90,16 @@ class TableViewController: UITableViewController {
         if let imageData = currentItem["image"] as? String {  //Data {
             if !imageData.isEmpty {
                 //cell.imageView?.image = UIImage(data: imageData)
-               
                 
-                cell.imageView?.image = getSavedImage(imageData)
-                cell.imageView?.translatesAutoresizingMaskIntoConstraints = false
-                //don't work 
-                cell.imageView?.frame = CGRect(origin: (cell.imageView?.frame.origin)!, size: CGSize(
-                    width: 27,
-                    height: (cell.imageView?.frame.size.height)!
-                ))
+                cell.imageView?.image = getSavedImage(imageData)                
                 
-                cell.imageView?.contentMode = .scaleAspectFit;
-                
-                
-                
-                
-                /* if cell.imageView != nil {
-                    cellImageViewConstraints(cell.imageView!)
-                    
-                }*/
-                
+                let itemSize = CGSize(width:42.0, height:42.0)
+                UIGraphicsBeginImageContextWithOptions(itemSize, false, 0.0)
+                let imageRect = CGRect(x:0.0, y:0.0, width:itemSize.width, height:itemSize.height)
+                cell.imageView?.image!.draw(in:imageRect)
+                cell.imageView?.image! = UIGraphicsGetImageFromCurrentImageContext()!
+                UIGraphicsEndImageContext()
+ 
             }
             
         }
@@ -123,6 +115,9 @@ class TableViewController: UITableViewController {
         item["index"] = indexPath.row
         print(item)
         performSegue(withIdentifier: "makingTransition", sender: item)
+        
+        //editvc.note = item
+        //navigationController?.pushViewController(editvc, animated: true)
         
     }
     
@@ -185,11 +180,8 @@ class TableViewController: UITableViewController {
         return nil
     }
     
-    func cellImageViewConstraints(_ imageView: UIImageView) {
-        imageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: 100).isActive = true
-        imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-    }
     
 }
+
+
+

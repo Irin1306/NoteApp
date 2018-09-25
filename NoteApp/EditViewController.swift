@@ -27,8 +27,8 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate, UIN
    
     @IBAction func pushEditAction(_ sender: Any) {
         
-        let title = textTitle.text
-        let description = textDescription.text
+        let title = textTitle.text != "Add the title" ? textTitle.text : ""
+        let description = textDescription.text != "Add the description" ? textDescription.text : ""    
         let index = note["index"] as? Int
         
         if imageView != nil && imageView.image != nil {
@@ -88,7 +88,7 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         if let imageData = note["image"] as? String {   //Data {
             //imageView.image = UIImage(data: imageData)
              if !imageData.isEmpty {
-                imageView.image = getSavedImage(imageData)
+                imageView?.image = getSavedImage(imageData)
              } else {
                 imageViewHeight.constant = 0
             }
@@ -99,6 +99,7 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         
         
         picker.delegate = self
+        picker.modalPresentationStyle = .overCurrentContext
         textTitle.delegate = self
         textDescription.delegate = self
         super.viewDidLoad()
@@ -114,7 +115,7 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         let chosenImage = info[UIImagePickerControllerOriginalImage] as! UIImage
         imageViewHeight.constant = 128
-        imageView.image = chosenImage
+        imageView?.image = chosenImage
         //self.performSegue(withIdentifier: "ShowEditView", sender: self)
         dismiss(animated: true, completion: nil)
     }

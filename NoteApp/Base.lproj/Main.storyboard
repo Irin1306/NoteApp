@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -20,7 +21,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="left" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" textLabel="xVU-bp-04R" detailTextLabel="zQU-y3-ecl" rowHeight="97" style="IBUITableViewCellStyleSubtitle" id="Mra-Xh-1XP">
+                            <tableViewCell clipsSubviews="YES" contentMode="left" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" textLabel="xVU-bp-04R" detailTextLabel="zQU-y3-ecl" imageView="r6a-Xx-2mt" rowHeight="97" style="IBUITableViewCellStyleSubtitle" id="Mra-Xh-1XP">
                                 <rect key="frame" x="0.0" y="28" width="375" height="97"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Mra-Xh-1XP" id="9Tc-dk-mZO">
@@ -41,6 +42,10 @@
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="r6a-Xx-2mt">
+                                            <rect key="frame" x="16" y="7" width="81" height="81"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </imageView>
                                     </subviews>
                                 </tableViewCellContentView>
                             </tableViewCell>
@@ -58,6 +63,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <refreshControl key="refreshControl" opaque="NO" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="uIL-Yo-CyC">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </refreshControl>
                     <connections>
@@ -102,10 +108,11 @@
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences" enablesReturnKeyAutomatically="YES"/>
                             </textView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Sr2-4u-aam">
-                                <rect key="frame" x="67" y="132" width="240" height="128"/>
+                                <rect key="frame" x="22" y="132" width="331" height="128"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="128" id="C6F-aR-5ma"/>
-                                    <constraint firstAttribute="width" constant="240" id="LZq-5y-kkk"/>
+                                    <constraint firstAttribute="width" secondItem="Sr2-4u-aam" secondAttribute="height" multiplier="331:128" id="SNb-oK-lFs"/>
+                                    <constraint firstAttribute="width" constant="331" id="T22-7R-zbs"/>
                                 </constraints>
                             </imageView>
                         </subviews>
@@ -113,11 +120,10 @@
                         <constraints>
                             <constraint firstItem="Vue-vG-nSM" firstAttribute="top" secondItem="Sr2-4u-aam" secondAttribute="bottom" constant="22" id="5jT-iv-ts8"/>
                             <constraint firstItem="pCT-Ss-PSl" firstAttribute="trailing" secondItem="Vue-vG-nSM" secondAttribute="trailing" constant="16" id="8qc-st-JwE"/>
-                            <constraint firstItem="Sr2-4u-aam" firstAttribute="leading" secondItem="pCT-Ss-PSl" secondAttribute="leading" constant="67" id="G2b-8k-aP7"/>
+                            <constraint firstItem="Sr2-4u-aam" firstAttribute="leading" secondItem="pCT-Ss-PSl" secondAttribute="leading" constant="22" id="G2b-8k-aP7"/>
                             <constraint firstItem="uIG-TP-DRs" firstAttribute="trailing" secondItem="Ozj-h5-adr" secondAttribute="trailingMargin" id="GwN-nS-GHh"/>
                             <constraint firstItem="uIG-TP-DRs" firstAttribute="top" secondItem="pCT-Ss-PSl" secondAttribute="top" constant="25" id="NgL-tn-F6p"/>
                             <constraint firstItem="Vue-vG-nSM" firstAttribute="leading" secondItem="pCT-Ss-PSl" secondAttribute="leading" constant="16" id="QoW-Xg-bps"/>
-                            <constraint firstItem="pCT-Ss-PSl" firstAttribute="trailing" secondItem="Sr2-4u-aam" secondAttribute="trailing" constant="68" id="SfK-ra-lQH"/>
                             <constraint firstItem="rnd-AE-sAT" firstAttribute="leading" secondItem="pCT-Ss-PSl" secondAttribute="leading" constant="16" id="XQ2-aO-ab0"/>
                             <constraint firstItem="Vue-vG-nSM" firstAttribute="leading" secondItem="pCT-Ss-PSl" secondAttribute="leading" constant="16" id="hld-tt-t15"/>
                             <constraint firstItem="rnd-AE-sAT" firstAttribute="top" secondItem="pCT-Ss-PSl" secondAttribute="top" id="kmr-Xz-HhU"/>
@@ -144,10 +150,10 @@
             </objects>
             <point key="canvasLocation" x="2701.5999999999999" y="42.728635682158924"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Main Navigation Controller-->
         <scene sceneID="Xg6-O9-ERJ">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="XpO-Cx-4xS" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="MainNavigationController" automaticallyAdjustsScrollViewInsets="NO" id="XpO-Cx-4xS" customClass="MainNavigationController" customModule="NoteApp" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="E54-Zn-u5y">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
