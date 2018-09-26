@@ -8,12 +8,25 @@
 
 import UIKit
 
+
 class EditViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextViewDelegate {
     
-    var note = [String: Any]()
-    
+    var notes = [String: Any]()
+    var img: String? = nil
     
     @IBOutlet weak var imageViewHeight: NSLayoutConstraint!
+    
+    @IBAction func tapImageViewAction(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let ivc = storyboard.instantiateViewController(withIdentifier: "ImageViewController") as! ImageViewController
+        
+        if let imgPath = img {
+            ivc.img = imgPath
+            ivc.notes = notes
+            
+        }
+        navigationController?.pushViewController(ivc, animated: true)
+    }
     
     let picker = UIImagePickerController()
     
@@ -29,7 +42,7 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         
         let title = textTitle.text != "Add the title" ? textTitle.text : ""
         let description = textDescription.text != "Add the description" ? textDescription.text : ""    
-        let index = note["index"] as? Int
+        let index = notes["index"] as? Int
         
         if imageView != nil && imageView.image != nil {
             
@@ -58,8 +71,12 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate, UIN
    
     
     override func viewDidLoad() {
-        print(note)
-        if let title = note["Title"] as? String {
+        
+        super.viewDidLoad()
+        
+        // Do any additional setup after loading the view.
+        print(notes)
+        if let title = notes["Title"] as? String {
             if !title.isEmpty {
                 textTitle.text = title
             } else {
@@ -71,7 +88,7 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             textTitle.textColor = UIColor.lightGray
         }
         
-        if let description = note["Description"] as? String  {
+        if let description = notes["Description"] as? String  {
             if !description.isEmpty {
                 textDescription.text = description
             } else {
@@ -84,27 +101,25 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             textDescription.textColor = UIColor.lightGray
             
         }
-
-        if let imageData = note["image"] as? String {   //Data {
+        
+        if let imageData = notes["image"] as? String {   //Data {
             //imageView.image = UIImage(data: imageData)
-             if !imageData.isEmpty {
+            if !imageData.isEmpty {
                 imageView?.image = getSavedImage(imageData)
-             } else {
+                img = imageData
+            } else {
                 imageViewHeight.constant = 0
             }
-                
+            
         } else {
             imageViewHeight.constant = 0
         }
-        
         
         picker.delegate = self
         picker.modalPresentationStyle = .overCurrentContext
         textTitle.delegate = self
         textDescription.delegate = self
-        super.viewDidLoad()
         
-        // Do any additional setup after loading the view.
     }
         
     override func didReceiveMemoryWarning() {
@@ -124,42 +139,7 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         dismiss(animated: true, completion: nil)
     }
     
-    func saveImageToDocumentDirectory(_ chosenImage: UIImage) -> String {
-        let directoryPath =  NSHomeDirectory().appending("/Documents/")
-        if !FileManager.default.fileExists(atPath: directoryPath) {
-            do {
-                try FileManager.default.createDirectory(at: NSURL.fileURL(withPath: directoryPath), withIntermediateDirectories: true, attributes: nil)
-            } catch {
-                print(error)
-            }
-        }
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        let filename = formatter.string(from: Date()).appending(".jpg")
-        let filepath = directoryPath.appending(filename)
-        let url = NSURL.fileURL(withPath: filepath)
-        do {
-            try UIImageJPEGRepresentation(chosenImage, 1.0)?.write(to: url, options: .atomic)
-            print("file was saved at path \(filepath)");
-            //return String.init("/Documents/\(filepath)")
-            return filename
-            
-        } catch {
-            print(error)
-            print("file cant not be save at path \(filepath), with error : \(error)");
-            return filename
-        }
-    }
-    
-    func getSavedImage(_ named: String) -> UIImage? {
-        if let dir = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false) {
-            print(named)
-            return UIImage(contentsOfFile: URL(fileURLWithPath: dir.absoluteString).appendingPathComponent(named).path)
-            
-        }
-        return nil
-    }
-    
+       
     func textViewDidBeginEditing(_ textView: UITextView) {
         if textView.textColor == UIColor.lightGray {
             textView.text = nil
@@ -180,7 +160,7 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         }
         
     }
-    
+  
 }
 
 

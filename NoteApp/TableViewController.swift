@@ -9,15 +9,16 @@
 import UIKit
 
 class TableViewController: UITableViewController {
-
-    //let editvc = EditViewController()
+   
     
     @IBAction func pushAddAction(_ sender: Any) {
         
-        performSegue(withIdentifier: "makingTransition", sender: ["index": -1])
+        //performSegue(withIdentifier: "makingTransition", sender: ["index": -1])
         
-        //editvc.note = ["index": -1]
-        //navigationController?.pushViewController(editvc, animated: true)
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let editvc = storyboard.instantiateViewController(withIdentifier: "EditViewController") as! EditViewController
+        editvc.notes = ["index": -1]
+        navigationController?.pushViewController(editvc, animated: true)
         
         /*
         let alertController = UIAlertController(title: "Create new note", message: nil, preferredStyle: .alert)
@@ -49,7 +50,8 @@ class TableViewController: UITableViewController {
         
         tableView.tableFooterView = UIView()
         tableView.backgroundColor = UIColor.groupTableViewBackground
-        
+        //deleteAllImage()
+        //removeItem(atIndex: 0)
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -59,6 +61,7 @@ class TableViewController: UITableViewController {
     
     override func viewWillAppear(_ animated: Bool) {    
         tableView.reloadData()
+        print(NotesItems)
     }
     
     override func didReceiveMemoryWarning() {
@@ -102,7 +105,8 @@ class TableViewController: UITableViewController {
  
             }
             
-        }
+        }      
+        
         return cell
     }
     
@@ -114,10 +118,12 @@ class TableViewController: UITableViewController {
         
         item["index"] = indexPath.row
         print(item)
-        performSegue(withIdentifier: "makingTransition", sender: item)
+        //performSegue(withIdentifier: "makingTransition", sender: item)
         
-        //editvc.note = item
-        //navigationController?.pushViewController(editvc, animated: true)
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let editvc = storyboard.instantiateViewController(withIdentifier: "EditViewController") as! EditViewController
+        editvc.notes = item
+        navigationController?.pushViewController(editvc, animated: true)
         
     }
     
@@ -168,17 +174,9 @@ class TableViewController: UITableViewController {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         let svc = segue.destination as! EditViewController
-        svc.note = sender as! [String: Any]        
-    }
-    
-    func getSavedImage(_ named: String) -> UIImage? {
-        if let dir = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false) {
-            print(named)
-            return UIImage(contentsOfFile: URL(fileURLWithPath: dir.absoluteString).appendingPathComponent(named).path)        
+        svc.notes = sender as! [String: Any]
         
-        }
-        return nil
-    }
+    }   
     
     
 }
