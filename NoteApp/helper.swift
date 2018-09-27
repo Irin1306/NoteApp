@@ -80,7 +80,7 @@ func deleteAllImage() {
     print(items)
     
     do {
-        let items = try fm.contentsOfDirectory(atPath: directoryPath )
+        items = try fm.contentsOfDirectory(atPath: directoryPath )
         
         for item in items {
             let filepath = directoryPath.appending(item)

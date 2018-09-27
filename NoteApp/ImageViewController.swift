@@ -8,6 +8,11 @@
 
 import UIKit
 
+protocol ClassIVCDelegate: class {
+    func onDeleted() -> [String: Any]
+    
+}
+
 class ImageViewController: UIViewController {
     
     var notes = [String: Any]()
@@ -15,13 +20,18 @@ class ImageViewController: UIViewController {
     
     @IBOutlet weak var imageView: UIImageView!
     
+    weak var delegate: ClassIVCDelegate?
+    
     @IBAction func deleteImageAction(_ sender: Any) {
         let isDeleted = deleteImage(img)
-        let ind = notes["index"] as? Int
+        let ind = notes["ind"] as? Int
         if isDeleted && ind != -1 {
-            print("deleteImageAction\(ind ?? -2)")         
+            print("deleteImageAction\(ind ?? -1)")
             
-            addItem(title: notes["Title"] as! String, description: notes["Description"] as! String, index: ind!, image: "")
+            updateItem(title: notes["Title"] as! String, description: notes["Description"] as! String,
+                       index: notes["index"] as! String, image: "")
+            
+            delegate?.onDeleted()
             
         }
         navigationController?.popViewController(animated: true)
@@ -32,12 +42,19 @@ class ImageViewController: UIViewController {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
+        
+        
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
         print(img, notes)
         if !img.isEmpty {
             imageView?.image = getSavedImage(img)
         }
+        
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

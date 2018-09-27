@@ -8,8 +8,11 @@
 
 import UIKit
 
-class TableViewController: UITableViewController {
+class TableViewController: UITableViewController, UISearchBarDelegate {
    
+    @IBOutlet weak var searchBar: UISearchBar!
+    
+    var currentNotes = [[String: Any]]()
     
     @IBAction func pushAddAction(_ sender: Any) {
         
@@ -17,7 +20,7 @@ class TableViewController: UITableViewController {
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let editvc = storyboard.instantiateViewController(withIdentifier: "EditViewController") as! EditViewController
-        editvc.notes = ["index": -1]
+        editvc.notes = ["ind": -1]
         navigationController?.pushViewController(editvc, animated: true)
         
         /*
@@ -47,7 +50,7 @@ class TableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        setUpSearchBar()
         tableView.tableFooterView = UIView()
         tableView.backgroundColor = UIColor.groupTableViewBackground
         //deleteAllImage()
@@ -57,11 +60,19 @@ class TableViewController: UITableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
          //self.navigationItem.rightBarButtonItem = self.editButtonItem
+        currentNotes = NotesItems
     }
     
-    override func viewWillAppear(_ animated: Bool) {    
+    private func setUpSearchBar() {
+        //searchBar.delegate = self
+        searchBar.isHidden = true
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
         tableView.reloadData()
-        print(NotesItems)
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -113,11 +124,8 @@ class TableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         print(indexPath.row)
-        var item = NotesItems[indexPath.row]
-        print(item)
-        
-        item["index"] = indexPath.row
-        print(item)
+        let item = NotesItems[indexPath.row]    
+         
         //performSegue(withIdentifier: "makingTransition", sender: item)
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -138,17 +146,23 @@ class TableViewController: UITableViewController {
     // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
+            let currentItem = NotesItems[indexPath.row]
             // Delete the row from the data source
             removeItem(atIndex: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
-            
+            if let imageData = currentItem["image"] as? String {
+                if !imageData.isEmpty {
+                    deleteImage(imageData)
+                }
+                
+            }
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }    
     }
     
 
-    
+    /*
     // Override to support rearranging the table view.
     override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
         moveItem(fromIndex: fromIndexPath.row, toIndex: to.row)
@@ -156,7 +170,31 @@ class TableViewController: UITableViewController {
         tableView.reloadData()
         
     }
+ */
     
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        guard !searchText.isEmpty else {
+            currentNotes = NotesItems
+            tableView.reloadData()
+            return
+            
+        }
+        currentNotes = NotesItems.filter({note -> Bool in
+            
+            if  let title = note["Title"] as? String {
+                return title.lowercased().contains(searchText.lowercased())
+            }
+             else {
+                return false
+            }
+        })
+        tableView.reloadData()
+        
+    }
+    /*
+    func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
+        
+    }*/
 
     /*
     // Override to support conditional rearranging of the table view.

@@ -24,14 +24,42 @@ var NotesItems: [[String: Any]] {
     }
 }
 
-func addItem(title: String, description: String, index: Int, image: String) {     //Any?) {
-    if index == -1 {
-        NotesItems.append(["Title": title, "Description": description, "image": image])     //image as Any ])
-    } else {
-        NotesItems[index] = ["Title": title, "Description": description, "image": image]      //image as Any]
-    }
+
+
+func addItem(title: String, description: String, index: String, image: String) {
+    
+        NotesItems.append(["Title": title, "Description": description, "index": index, "image": image])
     
 }
+
+func updateItem(title: String, description: String, index: String, image: String) {
+    
+    for i in 0...NotesItems.count {
+        if NotesItems[i]["index"] as! String == index {
+            NotesItems[i].updateValue(title, forKey: "Title")
+            NotesItems[i].updateValue(description, forKey: "Description")
+            NotesItems[i].updateValue(index, forKey: "index")
+            NotesItems[i].updateValue(image, forKey: "image")
+            return
+        }
+    }
+ 
+    /*
+    for var i in  NotesItems  {
+        if  i["index"] as! String == index {
+            print(123154564)
+            i.updateValue(title, forKey: "Title")
+            i.updateValue(description, forKey: "Description")
+            i.updateValue(index, forKey: "index")
+            i.updateValue(image, forKey: "image")
+
+print(i)
+            
+        }
+    }*/
+    
+}
+
 
 func removeItem(atIndex: Int) {
     NotesItems.remove(at: atIndex)

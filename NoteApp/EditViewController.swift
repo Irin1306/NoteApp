@@ -9,12 +9,21 @@
 import UIKit
 
 
-class EditViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextViewDelegate {
+
+class EditViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextViewDelegate, ClassIVCDelegate {
+    
     
     var notes = [String: Any]()
     var img: String? = nil
+   
     
     @IBOutlet weak var imageViewHeight: NSLayoutConstraint!
+    
+    func onDeleted() -> [String: Any] {
+        [notes]
+        notes["image"] = ""
+        return notes
+    }
     
     @IBAction func tapImageViewAction(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -25,10 +34,12 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             ivc.notes = notes
             
         }
+        ivc.delegate = self
         navigationController?.pushViewController(ivc, animated: true)
     }
     
     let picker = UIImagePickerController()
+    
     
     var selectedImage : UIImage!
     
@@ -41,8 +52,8 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     @IBAction func pushEditAction(_ sender: Any) {
         
         let title = textTitle.text != "Add the title" ? textTitle.text : ""
-        let description = textDescription.text != "Add the description" ? textDescription.text : ""    
-        let index = notes["index"] as? Int
+        let description = textDescription.text != "Add the description" ? textDescription.text : ""
+        let uuid = NSUUID().uuidString
         
         if imageView != nil && imageView.image != nil {
             
@@ -50,10 +61,20 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate, UIN
           
             let imagePath = saveImageToDocumentDirectory(imageView.image!)
             
-            addItem(title: title!, description: description!, index: index!, image: imagePath)
+            if notes["ind"] != nil {
+                addItem(title: title!, description: description!, index: uuid, image: imagePath)
+                
+            } else {
+                updateItem(title: title!, description: description!, index: notes["index"] as! String, image: imagePath)
+            }
             
         } else {
-            addItem(title: title!, description: description!, index: index!, image: "")
+            if notes["ind"] != nil {
+                addItem(title: title!, description: description!, index: uuid, image: "")
+                
+            } else {
+                updateItem(title: title!, description: description!, index: notes["index"] as! String, image: "")
+            }
             
         }        
         
@@ -75,6 +96,19 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
+        
+        picker.delegate = self
+        picker.modalPresentationStyle = .overCurrentContext
+        textTitle.delegate = self
+        textDescription.delegate = self
+      
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        
+        print("editViewController")
+        
         print(notes)
         if let title = notes["Title"] as? String {
             if !title.isEmpty {
@@ -114,14 +148,8 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         } else {
             imageViewHeight.constant = 0
         }
-        
-        picker.delegate = self
-        picker.modalPresentationStyle = .overCurrentContext
-        textTitle.delegate = self
-        textDescription.delegate = self
-        
     }
-        
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

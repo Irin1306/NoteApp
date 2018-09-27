@@ -20,9 +20,18 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <searchBar key="tableHeaderView" contentMode="redraw" id="QsB-uD-Sqq">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="56"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <textInputTraits key="textInputTraits"/>
+                            <scopeButtonTitles>
+                                <string>Title</string>
+                                <string>Title</string>
+                            </scopeButtonTitles>
+                        </searchBar>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="left" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" textLabel="xVU-bp-04R" detailTextLabel="zQU-y3-ecl" imageView="r6a-Xx-2mt" rowHeight="97" style="IBUITableViewCellStyleSubtitle" id="Mra-Xh-1XP">
-                                <rect key="frame" x="0.0" y="28" width="375" height="97"/>
+                                <rect key="frame" x="0.0" y="84" width="375" height="97"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Mra-Xh-1XP" id="9Tc-dk-mZO">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="96.5"/>
@@ -67,6 +76,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </refreshControl>
                     <connections>
+                        <outlet property="searchBar" destination="QsB-uD-Sqq" id="8Xb-nk-kh5"/>
                         <segue destination="Alf-c5-2qd" kind="show" identifier="makingTransition" id="Qlv-64-3xl"/>
                     </connections>
                 </tableViewController>
