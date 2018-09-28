@@ -19,6 +19,7 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     
     @IBOutlet weak var imageViewHeight: NSLayoutConstraint!
     
+    
     func onDeleted() -> [String: Any] {
         [notes]
         notes["image"] = ""

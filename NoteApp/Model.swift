@@ -43,6 +43,18 @@ func updateItem(title: String, description: String, index: String, image: String
             return
         }
     }
+}
+func updateByRemoveImg(index: String) {
+        
+        for i in 0...NotesItems.count {
+            if NotesItems[i]["index"] as! String == index {
+                let image = ""
+                NotesItems[i].updateValue(image, forKey: "image")
+                return
+         }
+     }
+}
+
  
     /*
     for var i in  NotesItems  {
@@ -53,12 +65,13 @@ func updateItem(title: String, description: String, index: String, image: String
             i.updateValue(index, forKey: "index")
             i.updateValue(image, forKey: "image")
 
-print(i)
+            print(i)
+            
             
         }
-    }*/
+    } */
     
-}
+ 
 
 
 func removeItem(atIndex: Int) {

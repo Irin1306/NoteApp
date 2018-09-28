@@ -10,7 +10,7 @@ import UIKit
 
 class TableViewController: UITableViewController, UISearchBarDelegate {
    
-    @IBOutlet weak var searchBar: UISearchBar!
+   // @IBOutlet weak var searchBar: UISearchBar!
     
     var currentNotes = [[String: Any]]()
     
@@ -65,7 +65,7 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
     
     private func setUpSearchBar() {
         //searchBar.delegate = self
-        searchBar.isHidden = true
+       // searchBar.isHidden = true
         
     }
     

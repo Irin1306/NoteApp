@@ -27,9 +27,7 @@ class ImageViewController: UIViewController {
         let ind = notes["ind"] as? Int
         if isDeleted && ind != -1 {
             print("deleteImageAction\(ind ?? -1)")
-            
-            updateItem(title: notes["Title"] as! String, description: notes["Description"] as! String,
-                       index: notes["index"] as! String, image: "")
+            updateByRemoveImg(index: notes["index"] as! String)
             
             delegate?.onDeleted()
             
