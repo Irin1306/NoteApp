@@ -19,7 +19,10 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
     var notes = [Note]()
     
    //var search = ""
-  
+    let cayenne = UIColor.init(red: 0.498, green: 0, blue: 0, alpha: 1)
+    //let cayenneWithAlpha = UIColor.init(red: 0.498, green: 0, blue: 0, alpha: 0.4)
+    
+    
     @IBAction func pushAddAction(_ sender: Any) {
         
         //performSegue(withIdentifier: "makingTransition", sender: ["index": -1])
@@ -59,7 +62,21 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
         setUpSearchBar()
         tableView.tableFooterView = UIView()
         tableView.backgroundColor = UIColor.groupTableViewBackground
-       
+        
+        let textAttributes = [NSAttributedStringKey.foregroundColor: cayenne]
+        navigationController?.navigationBar.titleTextAttributes = textAttributes
+        
+        let textFieldInsideSearchBar = searchBar.value(forKey: "searchField") as? UITextField
+        textFieldInsideSearchBar?.textColor = cayenne
+        
+        let glassIconView = textFieldInsideSearchBar?.leftView as? UIImageView
+        glassIconView?.image = glassIconView?.image?.withRenderingMode(.alwaysTemplate)
+        glassIconView?.tintColor = cayenne
+        
+        //let clearButton = textFieldInsideSearchBar?.value(forKey: "clearButton") as! UIButton
+        //clearButton.setImage(clearButton.imageView?.image?.withRenderingMode(.alwaysTemplate), for: .normal)
+        //clearButton.tintColor = cayenne
+        
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -121,6 +138,9 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
         */
         
         tableView.rowHeight = 76.0
+       // cell.layer.borderWidth = 0.3
+       // cell.layer.borderColor = cayenne.cgColor
+        
         let labelSize = CGSize(width:52.0, height:18.0)
         let labelRect = CGRect(x:16.0, y:58.0, width:labelSize.width, height:labelSize.height)
         let label = UILabel(frame: labelRect)
