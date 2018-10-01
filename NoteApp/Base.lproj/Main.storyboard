@@ -11,7 +11,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--All notes-->
+        <!--NoteApp-->
         <scene sceneID="gu7-Yg-IfG">
             <objects>
                 <tableViewController storyboardIdentifier="TableViewController" id="Di5-Fl-w5f" customClass="TableViewController" customModule="NoteApp" customModuleProvider="target" sceneMemberID="viewController">
@@ -19,23 +19,32 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <searchBar key="tableHeaderView" contentMode="redraw" searchBarStyle="minimal" placeholder="Search" id="mXi-IA-xRw">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="56"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <textInputTraits key="textInputTraits"/>
+                            <scopeButtonTitles>
+                                <string>Title</string>
+                                <string>Title</string>
+                            </scopeButtonTitles>
+                        </searchBar>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="left" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" textLabel="xVU-bp-04R" detailTextLabel="zQU-y3-ecl" imageView="r6a-Xx-2mt" rowHeight="97" style="IBUITableViewCellStyleSubtitle" id="Mra-Xh-1XP">
-                                <rect key="frame" x="0.0" y="28" width="375" height="97"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="left" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" textLabel="xVU-bp-04R" detailTextLabel="zQU-y3-ecl" imageView="r6a-Xx-2mt" rowHeight="58" style="IBUITableViewCellStyleSubtitle" id="Mra-Xh-1XP">
+                                <rect key="frame" x="0.0" y="84" width="375" height="58"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Mra-Xh-1XP" id="9Tc-dk-mZO">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="96.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="57.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="xVU-bp-04R">
-                                            <rect key="frame" x="16" y="28" width="33.5" height="20.5"/>
+                                            <rect key="frame" x="16" y="10.5" width="28.5" height="17"/>
                                             <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Detail" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="zQU-y3-ecl">
-                                            <rect key="frame" x="16" y="51.5" width="33" height="14.5"/>
+                                            <rect key="frame" x="16" y="30" width="33" height="14.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                             <nil key="textColor"/>
@@ -54,7 +63,7 @@
                             <outlet property="delegate" destination="Di5-Fl-w5f" id="Ut9-fB-y4d"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="All notes" id="PqL-Es-cHX">
+                    <navigationItem key="navigationItem" title="NoteApp" id="PqL-Es-cHX">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="OSL-0r-rLa">
                             <connections>
                                 <action selector="pushAddAction:" destination="Di5-Fl-w5f" id="2c5-TX-zGV"/>
@@ -66,6 +75,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </refreshControl>
                     <connections>
+                        <outlet property="searchBar" destination="mXi-IA-xRw" id="gJk-E8-Mbc"/>
                         <segue destination="Alf-c5-2qd" kind="show" identifier="makingTransition" id="Qlv-64-3xl"/>
                     </connections>
                 </tableViewController>

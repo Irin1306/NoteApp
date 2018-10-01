@@ -5,17 +5,20 @@
 //  Created by USER on 18/09/2018.
 //  Copyright © 2018 My. All rights reserved.
 //
-
+import Foundation
 import UIKit
 import CoreData
 
 class TableViewController: UITableViewController, UISearchBarDelegate {
    
-   // @IBOutlet weak var searchBar: UISearchBar!
     
-    var currentNotes = [[String: Any]]()
+    @IBOutlet weak var searchBar: UISearchBar!
+    
+    var currentNotes = [Note]()
     
     var notes = [Note]()
+    
+   //var search = ""
   
     @IBAction func pushAddAction(_ sender: Any) {
         
@@ -62,12 +65,11 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
          //self.navigationItem.rightBarButtonItem = self.editButtonItem
-        currentNotes = NotesItems
+      
     }
     
     private func setUpSearchBar() {
-        //searchBar.delegate = self
-       // searchBar.isHidden = true
+        searchBar.delegate = self
         
     }
     
@@ -92,7 +94,7 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return notes.count
+        return currentNotes.count
     }
 
     
@@ -101,9 +103,34 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
        // let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! MyTableCell
 
         // Configure the cell...
-        let currentItem = notes[indexPath.row]
+        let currentItem = currentNotes[indexPath.row]
         cell.textLabel?.text = currentItem.title
         cell.detailTextLabel?.text = currentItem.text
+        
+        /*
+        let strTitle: NSString = currentItem.title as NSString
+        let strText: NSString = currentItem.text as NSString
+        let attributeTitle = NSMutableAttributedString.init(string: currentItem.title)
+        let attributeText = NSMutableAttributedString.init(string: currentItem.text)
+        attributeTitle.addAttribute(kCTForegroundColorAttributeName as NSAttributedStringKey, value: UIColor.red,
+                                    range: strTitle.range(of: search))
+        attributeText.addAttribute(kCTForegroundColorAttributeName as NSAttributedStringKey, value: UIColor.red,
+                                    range: strTitle.range(of: search))
+        cell.textLabel?.attributedText = attributeTitle
+        cell.detailTextLabel?.attributedText = attributeTitle
+        */
+        
+        tableView.rowHeight = 76.0
+        let labelSize = CGSize(width:52.0, height:18.0)
+        let labelRect = CGRect(x:16.0, y:58.0, width:labelSize.width, height:labelSize.height)
+        let label = UILabel(frame: labelRect)
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM-dd HH:mm"
+     
+        label.text = formatter.string(from: currentItem.created)
+        label.font = UIFont.italicSystemFont(ofSize: 8.0)
+        cell.contentView.addSubview(label)
+        
         if  let imageData = currentItem.image {
             cell.imageView?.image = UIImage(data: imageData)
           
@@ -120,8 +147,8 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        print(indexPath.row)
-        let item = notes[indexPath.row]
+        
+        let item = currentNotes[indexPath.row]
          
         //performSegue(withIdentifier: "makingTransition", sender: item)
         
@@ -132,18 +159,19 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
         
     }
     
+    /*
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         // Return false if you do not want the specified item to be editable.
         return true
     }
-    
+    */
 
     
     // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            let currentItem = notes[indexPath.row]
+            let currentItem = currentNotes[indexPath.row]
             // Delete the row from the data source
             
             deleteNote(currentItem)
@@ -168,28 +196,28 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         guard !searchText.isEmpty else {
-            currentNotes = NotesItems
+            currentNotes = notes
+           // search = ""
             tableView.reloadData()
             return
             
         }
-        currentNotes = NotesItems.filter({note -> Bool in
+        currentNotes = notes.filter{
+            $0.title.lowercased().contains(searchText.lowercased()) ||
+            $0.text.lowercased().contains(searchText.lowercased())
             
-            if  let title = note["Title"] as? String {
-                return title.lowercased().contains(searchText.lowercased())
-            }
-             else {
-                return false
-            }
-        })
-        tableView.reloadData()
+        }
+     
+       //search = searchText.lowercased()
+       tableView.reloadData()
         
     }
     /*
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
         
     }*/
-
+    
+    
     /*
     // Override to support conditional rearranging of the table view.
     override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
@@ -200,7 +228,7 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
 
     
     // MARK: - Navigation
-
+/*
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
@@ -209,11 +237,13 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
         //svc.note = sender as! [String: Any]
         
     }
+ */
     
     func getNotes() {
         print(Note.self)
         let notes = PersistentService.fetch(Note.self)
         self.notes = notes
+        currentNotes = self.notes
         self.tableView.reloadData()
         print(self.notes)
     }
@@ -222,9 +252,6 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
         PersistentService.delete(note)
         
     }
-   
     
 }
-
-
 
