@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class TableViewController: UITableViewController, UISearchBarDelegate {
    
@@ -14,13 +15,15 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
     
     var currentNotes = [[String: Any]]()
     
+    var notes = [Note]()
+  
     @IBAction func pushAddAction(_ sender: Any) {
         
         //performSegue(withIdentifier: "makingTransition", sender: ["index": -1])
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let editvc = storyboard.instantiateViewController(withIdentifier: "EditViewController") as! EditViewController
-        editvc.notes = ["ind": -1]
+        editvc.isExist = false
         navigationController?.pushViewController(editvc, animated: true)
         
         /*
@@ -53,8 +56,7 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
         setUpSearchBar()
         tableView.tableFooterView = UIView()
         tableView.backgroundColor = UIColor.groupTableViewBackground
-        //deleteAllImage()
-        //removeItem(atIndex: 0)
+       
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -71,7 +73,8 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        tableView.reloadData()
+        
+        getNotes()
         
     }
     
@@ -89,7 +92,7 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return NotesItems.count
+        return notes.count
     }
 
     
@@ -98,25 +101,19 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
        // let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! MyTableCell
 
         // Configure the cell...
-        let currentItem = NotesItems[indexPath.row]
-        cell.textLabel?.text = currentItem["Title"] as? String
-        cell.detailTextLabel?.text = currentItem["Description"] as? String
-        if let imageData = currentItem["image"] as? String {  //Data {
-            if !imageData.isEmpty {
-                //cell.imageView?.image = UIImage(data: imageData)
-                
-                cell.imageView?.image = getSavedImage(imageData)                
-                
+        let currentItem = notes[indexPath.row]
+        cell.textLabel?.text = currentItem.title
+        cell.detailTextLabel?.text = currentItem.text
+        if  let imageData = currentItem.image {
+            cell.imageView?.image = UIImage(data: imageData)
+          
                 let itemSize = CGSize(width:42.0, height:42.0)
                 UIGraphicsBeginImageContextWithOptions(itemSize, false, 0.0)
                 let imageRect = CGRect(x:0.0, y:0.0, width:itemSize.width, height:itemSize.height)
                 cell.imageView?.image!.draw(in:imageRect)
                 cell.imageView?.image! = UIGraphicsGetImageFromCurrentImageContext()!
                 UIGraphicsEndImageContext()
- 
-            }
-            
-        }      
+        }
         
         return cell
     }
@@ -124,13 +121,13 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         print(indexPath.row)
-        let item = NotesItems[indexPath.row]    
+        let item = notes[indexPath.row]
          
         //performSegue(withIdentifier: "makingTransition", sender: item)
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let editvc = storyboard.instantiateViewController(withIdentifier: "EditViewController") as! EditViewController
-        editvc.notes = item
+        editvc.editNote = item
         navigationController?.pushViewController(editvc, animated: true)
         
     }
@@ -146,16 +143,13 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
     // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            let currentItem = NotesItems[indexPath.row]
+            let currentItem = notes[indexPath.row]
             // Delete the row from the data source
-            removeItem(atIndex: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .fade)
-            if let imageData = currentItem["image"] as? String {
-                if !imageData.isEmpty {
-                    deleteImage(imageData)
-                }
-                
-            }
+            
+            deleteNote(currentItem)
+            getNotes()
+            //tableView.deleteRows(at: [indexPath], with: .fade)
+           
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }    
@@ -211,11 +205,24 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
-        let svc = segue.destination as! EditViewController
-        svc.notes = sender as! [String: Any]
+       // let svc = segue.destination as! EditViewController
+        //svc.note = sender as! [String: Any]
         
-    }   
+    }
     
+    func getNotes() {
+        print(Note.self)
+        let notes = PersistentService.fetch(Note.self)
+        self.notes = notes
+        self.tableView.reloadData()
+        print(self.notes)
+    }
+    
+    func deleteNote(_ note: Note) {
+        PersistentService.delete(note)
+        
+    }
+   
     
 }
 

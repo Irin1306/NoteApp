@@ -17,6 +17,11 @@
 		CEDA3486215A94300059060C /* MainNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDA3485215A94300059060C /* MainNavigationController.swift */; };
 		CEDA3488215BB5A60059060C /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDA3487215BB5A60059060C /* ImageViewController.swift */; };
 		CEDA348A215BBA840059060C /* helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDA3489215BBA840059060C /* helper.swift */; };
+		CEFF8696215E393D008AEE3B /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = CEFF8694215E393D008AEE3B /* Model.xcdatamodeld */; };
+		CEFF86BB215E4CCE008AEE3B /* DataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFF86BA215E4CCE008AEE3B /* DataHelper.swift */; };
+		CEFF86C0215E75F2008AEE3B /* Note+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFF86BE215E75F2008AEE3B /* Note+CoreDataClass.swift */; };
+		CEFF86C1215E75F2008AEE3B /* Note+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFF86BF215E75F2008AEE3B /* Note+CoreDataProperties.swift */; };
+		CEFF86C3215E7653008AEE3B /* PersistentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFF86C2215E7653008AEE3B /* PersistentService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +37,11 @@
 		CEDA3485215A94300059060C /* MainNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainNavigationController.swift; sourceTree = "<group>"; };
 		CEDA3487215BB5A60059060C /* ImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
 		CEDA3489215BBA840059060C /* helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = helper.swift; sourceTree = "<group>"; };
+		CEFF8695215E393D008AEE3B /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		CEFF86BA215E4CCE008AEE3B /* DataHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataHelper.swift; sourceTree = "<group>"; };
+		CEFF86BE215E75F2008AEE3B /* Note+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Note+CoreDataClass.swift"; sourceTree = "<group>"; };
+		CEFF86BF215E75F2008AEE3B /* Note+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Note+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		CEFF86C2215E7653008AEE3B /* PersistentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +74,8 @@
 		CE141BDC2151129B0004153C /* NoteApp */ = {
 			isa = PBXGroup;
 			children = (
+				CEFF86BE215E75F2008AEE3B /* Note+CoreDataClass.swift */,
+				CEFF86BF215E75F2008AEE3B /* Note+CoreDataProperties.swift */,
 				CE141BDD2151129B0004153C /* AppDelegate.swift */,
 				CE141BF521512BA00004153C /* EditViewController.swift */,
 				CE141BF3215115C90004153C /* Model.swift */,
@@ -75,6 +87,9 @@
 				CEDA3485215A94300059060C /* MainNavigationController.swift */,
 				CEDA3487215BB5A60059060C /* ImageViewController.swift */,
 				CEDA3489215BBA840059060C /* helper.swift */,
+				CEFF8694215E393D008AEE3B /* Model.xcdatamodeld */,
+				CEFF86BA215E4CCE008AEE3B /* DataHelper.swift */,
+				CEFF86C2215E7653008AEE3B /* PersistentService.swift */,
 			);
 			path = NoteApp;
 			sourceTree = "<group>";
@@ -150,11 +165,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEFF86C3215E7653008AEE3B /* PersistentService.swift in Sources */,
+				CEFF86C1215E75F2008AEE3B /* Note+CoreDataProperties.swift in Sources */,
+				CEFF86BB215E4CCE008AEE3B /* DataHelper.swift in Sources */,
 				CEDA3486215A94300059060C /* MainNavigationController.swift in Sources */,
 				CE141BF621512BA00004153C /* EditViewController.swift in Sources */,
 				CEDA348A215BBA840059060C /* helper.swift in Sources */,
+				CEFF8696215E393D008AEE3B /* Model.xcdatamodeld in Sources */,
 				CE141BF4215115C90004153C /* Model.swift in Sources */,
 				CE141BDE2151129B0004153C /* AppDelegate.swift in Sources */,
+				CEFF86C0215E75F2008AEE3B /* Note+CoreDataClass.swift in Sources */,
 				CEDA3488215BB5A60059060C /* ImageViewController.swift in Sources */,
 				CE141BF0215114F00004153C /* TableViewController.swift in Sources */,
 			);
@@ -354,6 +374,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		CEFF8694215E393D008AEE3B /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				CEFF8695215E393D008AEE3B /* Model.xcdatamodel */,
+			);
+			currentVersion = CEFF8695215E393D008AEE3B /* Model.xcdatamodel */;
+			path = Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = CE141BD22151129B0004153C /* Project object */;
 }

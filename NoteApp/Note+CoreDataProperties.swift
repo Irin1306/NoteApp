@@ -17,10 +17,10 @@ extension Note {
         return NSFetchRequest<Note>(entityName: "Note")
     }
 
-    @NSManaged public var created: NSDate?
-    @NSManaged public var id: NSObject?
-    @NSManaged public var image: NSData?
-    @NSManaged public var text: String?
-    @NSManaged public var title: String?
+    @NSManaged public var created: Date
+    @NSManaged public var id: String
+    @NSManaged public var image: Data?
+    @NSManaged public var text: String
+    @NSManaged public var title: String
 
 }

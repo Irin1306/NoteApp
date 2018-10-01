@@ -97,7 +97,7 @@
                                     <action selector="pushAddPictureAction:" destination="Alf-c5-2qd" eventType="touchUpInside" id="J0O-hB-uXn"/>
                                 </connections>
                             </button>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" text=" " translatesAutoresizingMaskIntoConstraints="NO" id="Vue-vG-nSM">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text=" " translatesAutoresizingMaskIntoConstraints="NO" id="Vue-vG-nSM">
                                 <rect key="frame" x="16" y="282" width="343" height="128"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="14"/>
@@ -121,6 +121,7 @@
                             <constraint firstItem="Sr2-4u-aam" firstAttribute="top" secondItem="rnd-AE-sAT" secondAttribute="bottom" constant="38" id="8E9-SN-Md7"/>
                             <constraint firstItem="uIG-TP-DRs" firstAttribute="leading" secondItem="Vue-vG-nSM" secondAttribute="leading" id="9Cq-fH-V78"/>
                             <constraint firstItem="uIG-TP-DRs" firstAttribute="trailing" secondItem="Ozj-h5-adr" secondAttribute="trailingMargin" id="F6N-h1-ys3"/>
+                            <constraint firstItem="Vue-vG-nSM" firstAttribute="top" secondItem="Sr2-4u-aam" secondAttribute="bottom" constant="22" id="N1m-fC-fhb"/>
                             <constraint firstItem="pCT-Ss-PSl" firstAttribute="bottom" secondItem="Vue-vG-nSM" secondAttribute="bottom" constant="257" id="Qzu-hV-cYT"/>
                             <constraint firstItem="rnd-AE-sAT" firstAttribute="leading" secondItem="uIG-TP-DRs" secondAttribute="leading" id="VtI-5g-eVe"/>
                             <constraint firstItem="Sr2-4u-aam" firstAttribute="leading" secondItem="pCT-Ss-PSl" secondAttribute="leading" constant="22" id="YhE-MU-Ulh"/>

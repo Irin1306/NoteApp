@@ -7,24 +7,19 @@
 //
 
 import UIKit
-
-
-
-class EditViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextViewDelegate, ClassIVCDelegate {
+import CoreData
+ 
+class EditViewController: UIViewController, UIImagePickerControllerDelegate,
+    UINavigationControllerDelegate, UITextViewDelegate {
     
     
-    var notes = [String: Any]()
-    var img: String? = nil
-   
+    var editNote: Note?
+    var img: Data?
+    var isExist = true
     
+
     @IBOutlet weak var imageViewHeight: NSLayoutConstraint!
-    
-    
-    func onDeleted() -> [String: Any] {
-        [notes]
-        notes["image"] = ""
-        return notes
-    }
+   
     
     @IBAction func tapImageViewAction(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -32,10 +27,10 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         
         if let imgPath = img {
             ivc.img = imgPath
-            ivc.notes = notes
+            ivc.note = editNote
             
         }
-        ivc.delegate = self
+       
         navigationController?.pushViewController(ivc, animated: true)
     }
     
@@ -53,28 +48,34 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     @IBAction func pushEditAction(_ sender: Any) {
         
         let title = textTitle.text != "Add the title" ? textTitle.text : ""
-        let description = textDescription.text != "Add the description" ? textDescription.text : ""
+        let text = textDescription.text != "Add the description" ? textDescription.text : ""
         let uuid = NSUUID().uuidString
+        let created = Date()
+        
         
         if imageView != nil && imageView.image != nil {
             
-            //let imageData = UIImageJPEGRepresentation(imageView.image!, 100)
-          
-            let imagePath = saveImageToDocumentDirectory(imageView.image!)
+            let imageData = UIImageJPEGRepresentation(imageView.image!, 0.3)
             
-            if notes["ind"] != nil {
-                addItem(title: title!, description: description!, index: uuid, image: imagePath)
+            if !isExist {
                 
+                createNote(id: uuid, created: created, title: title!, text: text!, image: imageData)
+              
             } else {
-                updateItem(title: title!, description: description!, index: notes["index"] as! String, image: imagePath)
+                
+                updateNote(title: title!, text: text!, image: imageData)
+                
             }
             
         } else {
-            if notes["ind"] != nil {
-                addItem(title: title!, description: description!, index: uuid, image: "")
+            if  !isExist {
+                
+                createNote(id: uuid, created: created, title: title!, text: text!, image: nil)
                 
             } else {
-                updateItem(title: title!, description: description!, index: notes["index"] as! String, image: "")
+                
+                updateNote(title: title!, text: text!, image: nil)                
+                
             }
             
         }        
@@ -108,10 +109,7 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         
-        print("editViewController")
-        
-        print(notes)
-        if let title = notes["Title"] as? String {
+        if let title = editNote?.title {
             if !title.isEmpty {
                 textTitle.text = title
             } else {
@@ -123,7 +121,7 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             textTitle.textColor = UIColor.lightGray
         }
         
-        if let description = notes["Description"] as? String  {
+        if let description = editNote?.text {
             if !description.isEmpty {
                 textDescription.text = description
             } else {
@@ -137,15 +135,9 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             
         }
         
-        if let imageData = notes["image"] as? String {   //Data {
-            //imageView.image = UIImage(data: imageData)
-            if !imageData.isEmpty {
-                imageView?.image = getSavedImage(imageData)
-                img = imageData
-            } else {
-                imageViewHeight.constant = 0
-            }
-            
+        if let imageData = editNote?.image {
+            imageView.image = UIImage(data: imageData)
+            img = imageData
         } else {
             imageViewHeight.constant = 0
         }
@@ -156,10 +148,11 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         // Dispose of any resources that can be recreated.
     }
         
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        let chosenImage = info[UIImagePickerControllerOriginalImage] as! UIImage
-        imageViewHeight.constant = 128
-        imageView?.image = chosenImage
+    @objc func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        if let chosenImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            imageViewHeight.constant = 128
+            imageView?.image = chosenImage
+        }
         //self.performSegue(withIdentifier: "ShowEditView", sender: self)
         dismiss(animated: true, completion: nil)
     }
@@ -187,6 +180,31 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             }
             textView.textColor = UIColor.lightGray
         }
+        
+    }
+    
+    func createNote(id: String, created: Date, title: String, text: String, image: Data?) {
+        
+        let newNote = Note(context: PersistentService.context)
+        newNote.id = id
+        newNote.created = created
+        newNote.title = title
+        newNote.text = text
+        if let imageData = image {
+            newNote.image = imageData
+        }
+        PersistentService.saveContext()
+        
+    }
+    
+    func updateNote(title: String, text: String, image: Data?) {
+        
+        editNote?.title = title
+        editNote?.text = text
+        if let imageData = image {
+            editNote?.image = imageData
+        }
+        PersistentService.saveContext()
         
     }
   
