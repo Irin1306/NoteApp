@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import Photos
  
 class EditViewController: UIViewController, UIImagePickerControllerDelegate,
     UINavigationControllerDelegate, UITextViewDelegate {
@@ -87,7 +88,7 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate,
         
         picker.isEditing = false
         picker.sourceType = .photoLibrary
-        
+        checkPermission()
         present(picker, animated: true, completion: nil)
         
     }
@@ -181,6 +182,28 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate,
             textView.textColor = UIColor.lightGray
         }
         
+    }
+    
+    func checkPermission() {
+        let photoAuthorizationStatus = PHPhotoLibrary.authorizationStatus()
+        
+        switch photoAuthorizationStatus {
+        case .authorized:
+            print("Access is granted by user")
+        case .notDetermined:
+            PHPhotoLibrary.requestAuthorization({
+                (newStatus) in
+                print("status is \(newStatus)")
+                if newStatus ==  PHAuthorizationStatus.authorized {
+                    print("success")
+                }
+            })
+            print("It is not determined until now")
+        case .restricted:
+            print("User do not have access to photo album.")
+        case .denied:
+            print("User has denied the permission.")
+        }
     }
     
     func createNote(id: String, created: Date, title: String, text: String, image: Data?) {
