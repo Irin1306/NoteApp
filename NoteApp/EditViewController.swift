@@ -13,6 +13,7 @@ import Photos
 class EditViewController: UIViewController, UIImagePickerControllerDelegate,
     UINavigationControllerDelegate, UITextViewDelegate {
     
+    let cayenne = UIColor.init(red: 0.498, green: 0, blue: 0, alpha: 1)
     
     var editNote: Note?
     var img: Data?
@@ -89,7 +90,9 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate,
         picker.isEditing = false
         picker.sourceType = .photoLibrary
         checkPermission()
+        //picker.navigationBar.barTintColor = UIColor.white
         present(picker, animated: true, completion: nil)
+        
         
     }
    
@@ -99,6 +102,14 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate,
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
+        let textAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
+        
+        UINavigationBar.appearance(whenContainedInInstancesOf: [UIImagePickerController.self]).backgroundColor = cayenne
+        UINavigationBar.appearance(whenContainedInInstancesOf: [UIImagePickerController.self]).isTranslucent = false
+        UINavigationBar.appearance(whenContainedInInstancesOf: [UIImagePickerController.self]).barTintColor = cayenne
+        UINavigationBar.appearance(whenContainedInInstancesOf: [UIImagePickerController.self]).tintColor = UIColor.white
+        UINavigationBar.appearance(whenContainedInInstancesOf: [UIImagePickerController.self]).titleTextAttributes = textAttributes
+        
         
         picker.delegate = self
         picker.modalPresentationStyle = .overCurrentContext

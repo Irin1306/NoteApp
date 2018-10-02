@@ -63,7 +63,7 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
         tableView.tableFooterView = UIView()
         tableView.backgroundColor = UIColor.groupTableViewBackground
         
-        let textAttributes = [NSAttributedStringKey.foregroundColor: cayenne]
+        let textAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
         navigationController?.navigationBar.titleTextAttributes = textAttributes
         
         let textFieldInsideSearchBar = searchBar.value(forKey: "searchField") as? UITextField
@@ -146,7 +146,7 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
         let label = UILabel(frame: labelRect)
         let formatter = DateFormatter()
         formatter.dateFormat = "MM-dd HH:mm"
-     
+        label.text = "
         label.text = formatter.string(from: currentItem.created)
         label.font = UIFont.italicSystemFont(ofSize: 8.0)
         cell.contentView.addSubview(label)
