@@ -18,7 +18,7 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
     
     var notes = [Note]()
     
-   //var search = ""
+    //var search = ""
     let cayenne = UIColor.init(red: 0.498, green: 0, blue: 0, alpha: 1)
     //let cayenneWithAlpha = UIColor.init(red: 0.498, green: 0, blue: 0, alpha: 0.4)
     
@@ -68,6 +68,7 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
         
         let textFieldInsideSearchBar = searchBar.value(forKey: "searchField") as? UITextField
         textFieldInsideSearchBar?.textColor = cayenne
+        textFieldInsideSearchBar?.tintColor = cayenne
         
         let glassIconView = textFieldInsideSearchBar?.leftView as? UIImageView
         glassIconView?.image = glassIconView?.image?.withRenderingMode(.alwaysTemplate)
@@ -136,7 +137,16 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
         cell.textLabel?.attributedText = attributeTitle
         cell.detailTextLabel?.attributedText = attributeTitle
         */
-        
+        /*for char in currentItem.title {
+            var str = ""
+            str.append(char)
+            if str == search {
+                print("Found character: \()")
+                
+            }
+        }
+         */
+ 
         tableView.rowHeight = 76.0
        // cell.layer.borderWidth = 0.3
        // cell.layer.borderColor = cayenne.cgColor
@@ -146,7 +156,7 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
         let label = UILabel(frame: labelRect)
         let formatter = DateFormatter()
         formatter.dateFormat = "MM-dd HH:mm"
-        label.text = "
+        label.text = ""
         label.text = formatter.string(from: currentItem.created)
         label.font = UIFont.italicSystemFont(ofSize: 8.0)
         cell.contentView.addSubview(label)
@@ -217,7 +227,7 @@ class TableViewController: UITableViewController, UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         guard !searchText.isEmpty else {
             currentNotes = notes
-           // search = ""
+            //search = ""
             tableView.reloadData()
             return
             
