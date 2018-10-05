@@ -11,8 +11,8 @@
 		CE141BE32151129B0004153C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE141BE12151129B0004153C /* Main.storyboard */; };
 		CE141BE52151129D0004153C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE141BE42151129D0004153C /* Assets.xcassets */; };
 		CE141BE82151129D0004153C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE141BE62151129D0004153C /* LaunchScreen.storyboard */; };
-		CE141BF0215114F00004153C /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE141BEF215114F00004153C /* TableViewController.swift */; };
 		CE141BF621512BA00004153C /* EditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE141BF521512BA00004153C /* EditViewController.swift */; };
+		CEC3B00D21679D2C000B650B /* NotesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC3B00C21679D2C000B650B /* NotesViewController.swift */; };
 		CEDA3488215BB5A60059060C /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDA3487215BB5A60059060C /* ImageViewController.swift */; };
 		CEFF8696215E393D008AEE3B /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = CEFF8694215E393D008AEE3B /* Model.xcdatamodeld */; };
 		CEFF86C0215E75F2008AEE3B /* Note+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFF86BE215E75F2008AEE3B /* Note+CoreDataClass.swift */; };
@@ -27,8 +27,8 @@
 		CE141BE42151129D0004153C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CE141BE72151129D0004153C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CE141BE92151129D0004153C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CE141BEF215114F00004153C /* TableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 		CE141BF521512BA00004153C /* EditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditViewController.swift; sourceTree = "<group>"; };
+		CEC3B00C21679D2C000B650B /* NotesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesViewController.swift; sourceTree = "<group>"; };
 		CEDA3487215BB5A60059060C /* ImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
 		CEFF8695215E393D008AEE3B /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		CEFF86BE215E75F2008AEE3B /* Note+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Note+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -70,7 +70,6 @@
 				CEFF86BF215E75F2008AEE3B /* Note+CoreDataProperties.swift */,
 				CE141BDD2151129B0004153C /* AppDelegate.swift */,
 				CE141BF521512BA00004153C /* EditViewController.swift */,
-				CE141BEF215114F00004153C /* TableViewController.swift */,
 				CE141BE12151129B0004153C /* Main.storyboard */,
 				CE141BE42151129D0004153C /* Assets.xcassets */,
 				CE141BE62151129D0004153C /* LaunchScreen.storyboard */,
@@ -78,6 +77,7 @@
 				CEDA3487215BB5A60059060C /* ImageViewController.swift */,
 				CEFF8694215E393D008AEE3B /* Model.xcdatamodeld */,
 				CEFF86C2215E7653008AEE3B /* PersistentService.swift */,
+				CEC3B00C21679D2C000B650B /* NotesViewController.swift */,
 			);
 			path = NoteApp;
 			sourceTree = "<group>";
@@ -156,11 +156,11 @@
 				CEFF86C3215E7653008AEE3B /* PersistentService.swift in Sources */,
 				CEFF86C1215E75F2008AEE3B /* Note+CoreDataProperties.swift in Sources */,
 				CE141BF621512BA00004153C /* EditViewController.swift in Sources */,
+				CEC3B00D21679D2C000B650B /* NotesViewController.swift in Sources */,
 				CEFF8696215E393D008AEE3B /* Model.xcdatamodeld in Sources */,
 				CE141BDE2151129B0004153C /* AppDelegate.swift in Sources */,
 				CEFF86C0215E75F2008AEE3B /* Note+CoreDataClass.swift in Sources */,
 				CEDA3488215BB5A60059060C /* ImageViewController.swift in Sources */,
-				CE141BF0215114F00004153C /* TableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
