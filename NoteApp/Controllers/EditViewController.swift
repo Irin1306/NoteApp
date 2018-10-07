@@ -24,16 +24,18 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate,
    
     
     @IBAction func tapImageViewAction(_ sender: Any) {
+      
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let ivc = storyboard.instantiateViewController(withIdentifier: "ImageViewController") as! ImageViewController
         
         if let imgPath = img {
             ivc.img = imgPath
             ivc.note = editNote
+            navigationController?.pushViewController(ivc, animated: true)
             
         }
        
-        navigationController?.pushViewController(ivc, animated: true)
+        
     }
     
     let picker = UIImagePickerController()
@@ -50,64 +52,68 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate,
     @IBAction func pushEditAction(_ sender: Any) {
         
         let title = textTitle.text != "Add the title" ? textTitle.text : ""
+        
+        
         let text = textDescription.text != "Add the description" ? textDescription.text : ""
         let uuid = NSUUID().uuidString
         let created = Date()
         
         
-        if imageView != nil && imageView.image != nil {
-            
-            let imageData = UIImageJPEGRepresentation(imageView.image!, 0.3)
-            
-            if !isExist {
+        if title != "" {
+            if imageView != nil && imageView.image != nil {
                 
-                createNote(id: uuid, created: created, title: title!, text: text!, image: imageData)
-              
+                let imageData = UIImageJPEGRepresentation(imageView.image!, 0.3)
+                
+                if !isExist {
+                    
+                    createNote(id: uuid, created: created, title: title!, text: text!, image: imageData)
+                    
+                } else {
+                    
+                    updateNote(title: title!, text: text!, image: imageData)
+                    
+                }
+                
             } else {
-                
-                updateNote(title: title!, text: text!, image: imageData)
+                if  !isExist {
+                    
+                    createNote(id: uuid, created: created, title: title!, text: text!, image: nil)
+                    
+                } else {
+                    
+                    updateNote(title: title!, text: text!, image: nil)
+                    
+                }
                 
             }
+            navigationController?.popViewController(animated: true)
             
         } else {
-            if  !isExist {
-                
-                createNote(id: uuid, created: created, title: title!, text: text!, image: nil)
-                
-            } else {
-                
-                updateNote(title: title!, text: text!, image: nil)                
-                
-            }
-            
-        }        
+            //
+        }
         
-        navigationController?.popViewController(animated: true)
+        
     }
     
     @IBAction func pushAddPictureAction(_ sender: Any) {
-        
-        picker.isEditing = false
-        picker.sourceType = .photoLibrary
         checkPermission()
-        //picker.navigationBar.barTintColor = UIColor.white
-        present(picker, animated: true, completion: nil)
-        
         
     }
-   
+    
+    
     
     override func viewDidLoad() {
         
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        let textAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
         
+        let textAttributes = [NSAttributedStringKey.foregroundColor: UIColor.yellow]        
+      
         UINavigationBar.appearance(whenContainedInInstancesOf: [UIImagePickerController.self]).backgroundColor = cayenne
         UINavigationBar.appearance(whenContainedInInstancesOf: [UIImagePickerController.self]).isTranslucent = false
         UINavigationBar.appearance(whenContainedInInstancesOf: [UIImagePickerController.self]).barTintColor = cayenne
-        UINavigationBar.appearance(whenContainedInInstancesOf: [UIImagePickerController.self]).tintColor = UIColor.white
+        UINavigationBar.appearance(whenContainedInInstancesOf: [UIImagePickerController.self]).tintColor = UIColor.yellow
         UINavigationBar.appearance(whenContainedInInstancesOf: [UIImagePickerController.self]).titleTextAttributes = textAttributes
         
         
@@ -119,7 +125,7 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate,
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
+        super.viewWillAppear(animated)
         
         if let title = editNote?.title {
             if !title.isEmpty {
@@ -148,8 +154,8 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate,
         }
         
         if let imageData = editNote?.image {
-            imageView.image = UIImage(data: imageData)
-            img = imageData
+            imageView.image = UIImage(data: imageData as Data)
+            img = imageData as Data
         } else {
             imageViewHeight.constant = 0
         }
@@ -195,37 +201,66 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate,
         
     }
     
+    
     func checkPermission() {
-        let photoAuthorizationStatus = PHPhotoLibrary.authorizationStatus()
+        let status = PHPhotoLibrary.authorizationStatus()
         
-        switch photoAuthorizationStatus {
+        switch status {
         case .authorized:
-            print("Access is granted by user")
+           photoLibrary()
+         
+        case .denied:
+            print("permission denied")
+            addAlertForSettings()
+            
         case .notDetermined:
-            PHPhotoLibrary.requestAuthorization({
-                (newStatus) in
-                print("status is \(newStatus)")
-                if newStatus ==  PHAuthorizationStatus.authorized {
-                    print("success")
+            print("Permission Not Determined")
+            PHPhotoLibrary.requestAuthorization({ (status) in
+                if status == PHAuthorizationStatus.authorized{
+                    // photo library access given
+                    print("access given")
+                    self.photoLibrary()
+                  
+                }else{
+                    print("restriced manually")
+                    self.addAlertForSettings()
                 }
             })
-            print("It is not determined until now")
         case .restricted:
-            print("User do not have access to photo album.")
-        case .denied:
-            print("User has denied the permission.")
+            print("permission restricted")
+            self.addAlertForSettings()
+        
         }
+    }
+    
+    func photoLibrary(){
+        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary){          
+            picker.sourceType = .photoLibrary
+            self.present(picker, animated: true, completion: nil)
+        }
+    }
+    
+    func addAlertForSettings() {
+        let alert = UIAlertController(title: "Photo", message: "Photo access is necessary to select photos", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+        // Add "OK" Button to alert, pressing it will bring you to the settings app
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+            UIApplication.shared.open(URL(string: UIApplicationOpenSettingsURLString)!)
+        }))
+        // Show the alert with animation
+        self.present(alert, animated: true)
+        
     }
     
     func createNote(id: String, created: Date, title: String, text: String, image: Data?) {
         
         let newNote = Note(context: PersistentService.context)
         newNote.id = id
-        newNote.created = created
+        newNote.created = created as NSDate
         newNote.title = title
         newNote.text = text
         if let imageData = image {
-            newNote.image = imageData
+            newNote.image = imageData as NSData
         }
         PersistentService.saveContext()
         
@@ -236,7 +271,7 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate,
         editNote?.title = title
         editNote?.text = text
         if let imageData = image {
-            editNote?.image = imageData
+            editNote?.image = imageData as NSData
         }
         PersistentService.saveContext()
         

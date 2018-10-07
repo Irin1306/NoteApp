@@ -19,6 +19,22 @@ class NotesTableViewCell: UITableViewCell {
     @IBOutlet weak var cellTextLabel: UILabel!
     
     @IBOutlet weak var cellCreatedLabel: UILabel!
+    
+    
+   // override func layoutSubviews() {
+     ///   super.layoutSubviews()
+        
+        //cellImageView.translatesAutoresizingMaskIntoConstraints = false
+        
+       // cellImageView.widthAnchor.constraint(equalToConstant: 70).isActive = true
+       // cellImageView.heightAnchor.constraint(equalToConstant: 70).isActive = true
+       // cellImageView.leadingAnchor.constraint(equalTo: (superview?.leadingAnchor)!, constant: 8).isActive = true
+       // cellImageView.topAnchor.constraint(equalTo: (superview?.topAnchor)!, constant: 8).isActive = true
+        
+        
+  //  }
+    
+    
 }
 
 class NotesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
@@ -96,11 +112,11 @@ class NotesViewController: UIViewController, UITableViewDataSource, UITableViewD
         
     }
     
-    var currentNotes = [Note]()
+    
     
     var notes = [Note]()
     
-    //var search = ""
+    
     let cayenne = UIColor.init(red: 0.498, green: 0, blue: 0, alpha: 1)
     //let cayenneWithAlpha = UIColor.init(red: 0.498, green: 0, blue: 0, alpha: 0.4)
     
@@ -112,11 +128,17 @@ class NotesViewController: UIViewController, UITableViewDataSource, UITableViewD
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpSearchBar()
-        tableView.tableFooterView = UIView()
-        tableView.backgroundColor = UIColor.groupTableViewBackground
-        
-        let textAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
+        //tableView.tableFooterView = UIView()
+       // tableView.backgroundColor = UIColor.groupTableViewBackground
+       
+        let textAttributes = [NSAttributedStringKey.foregroundColor: UIColor.yellow]
+       //navigationController?.navigationBar.titleTextAttributes = textAttributes
+            
+            
+       // navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.titleTextAttributes = textAttributes
+       // navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.yellow]
+        
         
         let textFieldInsideSearchBar = searchBar.value(forKey: "searchField") as? UITextField
         textFieldInsideSearchBar?.textColor = cayenne
@@ -135,6 +157,10 @@ class NotesViewController: UIViewController, UITableViewDataSource, UITableViewD
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         //self.navigationItem.rightBarButtonItem = self.editButtonItem
         
+        
+        
+       
+        
     }
     
     private func setUpSearchBar() {
@@ -143,11 +169,13 @@ class NotesViewController: UIViewController, UITableViewDataSource, UITableViewD
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
+        super.viewWillAppear(animated)
         
-        getNotes()
-        
+        notes = getNotes()
+        tableView.reloadData()
     }
+    
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -163,7 +191,8 @@ class NotesViewController: UIViewController, UITableViewDataSource, UITableViewD
     
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "noteCell", for: indexPath) as! NotesTableViewCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? NotesTableViewCell
+            else {return UITableViewCell()}
         
        
         // Configure the cell...
@@ -174,7 +203,7 @@ class NotesViewController: UIViewController, UITableViewDataSource, UITableViewD
         let formatter = DateFormatter()
         formatter.dateFormat = "MM-dd HH:mm"
        
-        cell.cellCreatedLabel?.text = formatter.string(from: currentItem.created)
+        cell.cellCreatedLabel?.text = formatter.string(from: currentItem.created as Date)
         /*
          let strTitle: NSString = currentItem.title as NSString
          let strText: NSString = currentItem.text as NSString
@@ -196,7 +225,6 @@ class NotesViewController: UIViewController, UITableViewDataSource, UITableViewD
          }
          }
          */
-        
         tableView.rowHeight = 100.0
         // cell.layer.borderWidth = 0.3
         // cell.layer.borderColor = cayenne.cgColor
@@ -210,27 +238,29 @@ class NotesViewController: UIViewController, UITableViewDataSource, UITableViewD
        // label.text = formatter.string(from: currentItem.created)
        // label.font = UIFont.italicSystemFont(ofSize: 8.0)
        // cell.contentView.addSubview(label)
-        /*
+        
         if  let imageData = currentItem.image {
-            cell.imageView?.image = UIImage(data: imageData)
-            
-            let itemSize = CGSize(width:42.0, height:42.0)
+            cell.cellImageView?.image = UIImage(data: imageData as Data)
+           /*
+            let itemSize = CGSize(width:70.0, height:70.0)
             UIGraphicsBeginImageContextWithOptions(itemSize, false, 0.0)
             let imageRect = CGRect(x:0.0, y:0.0, width:itemSize.width, height:itemSize.height)
             cell.imageView?.image!.draw(in:imageRect)
             cell.imageView?.image! = UIGraphicsGetImageFromCurrentImageContext()!
             UIGraphicsEndImageContext()
+            */
+        } else {
+            cell.cellImageView?.image = nil
+            
         }
-        */
+        
         return cell
     }
  
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        let item = currentNotes[indexPath.row]
-        
-        //performSegue(withIdentifier: "makingTransition", sender: item)
+        let item = notes[indexPath.row]
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let editvc = storyboard.instantiateViewController(withIdentifier: "EditViewController") as! EditViewController
@@ -246,20 +276,22 @@ class NotesViewController: UIViewController, UITableViewDataSource, UITableViewD
      return true
      }
      */
-    
+ 
     public func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            let currentItem = currentNotes[indexPath.row]
+            let currentItem = notes[indexPath.row]
             // Delete the row from the data source
             
             deleteNote(currentItem)
-            getNotes()
-            //tableView.deleteRows(at: [indexPath], with: .fade)
+           //tableView.deleteRows(at: [indexPath], with: .fade)            
+            notes = getNotes()
+            tableView.reloadData()
             
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }
     }
+ 
     
     
     /*
@@ -274,19 +306,17 @@ class NotesViewController: UIViewController, UITableViewDataSource, UITableViewD
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         guard !searchText.isEmpty else {
-            currentNotes = notes
-            //search = ""
+            notes = getNotes()
             tableView.reloadData()
             return
             
         }
-        currentNotes = notes.filter{
+        notes = notes.filter{
             $0.title.lowercased().contains(searchText.lowercased()) ||
                 $0.text.lowercased().contains(searchText.lowercased())
             
         }
-        
-        //search = searchText.lowercased()
+       
         tableView.reloadData()
         
     }
@@ -306,24 +336,10 @@ class NotesViewController: UIViewController, UITableViewDataSource, UITableViewD
     
     
     // MARK: - Navigation
-    /*
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destinationViewController.
-     // Pass the selected object to the new view controller.
-     // let svc = segue.destination as! EditViewController
-     //svc.note = sender as! [String: Any]
-     
-     }
-     */
     
-    func getNotes() {
-       // print(Note.self)
-        let notes = PersistentService.fetch(Note.self)
-        self.notes = notes
-        currentNotes = self.notes
-        self.tableView.reloadData()
-        print(self.notes)
+    
+    func getNotes() -> [Note] {
+        return PersistentService.fetch(Note.self)       
         
     }
     

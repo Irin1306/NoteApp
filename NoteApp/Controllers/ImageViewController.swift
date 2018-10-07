@@ -21,21 +21,23 @@ class ImageViewController: UIViewController {
     @IBAction func deleteImageAction(_ sender: Any) {
        
         updateNote()
-        navigationController?.popViewController(animated: true)
+        navigationController?.popToRootViewController(animated: true)
         
     }
     
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
         
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
+        super.viewWillAppear(animated)
         
-        if let image = UIImage(data: img!)  {
-            
+        if let imageData = img {
+            guard let image = UIImage(data: imageData) else{return}
             imageView.image = image
         }
       
