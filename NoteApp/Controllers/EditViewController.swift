@@ -9,9 +9,55 @@
 import UIKit
 import CoreData
 import Photos
- 
+
+@IBDesignable extension UIButton {
+    
+    @IBInspectable var borderWidth: CGFloat {
+        set {
+            layer.borderWidth = newValue
+        }
+        get {
+            return layer.borderWidth
+        }
+    }
+    
+    @IBInspectable var cornerRadius: CGFloat {
+        set {
+            layer.cornerRadius = newValue
+        }
+        get {
+            return layer.cornerRadius
+        }
+    }
+    
+    @IBInspectable var borderColor: UIColor? {
+        set {
+            guard let uiColor = newValue else { return }
+            layer.borderColor = uiColor.cgColor
+        }
+        get {
+            guard let color = layer.borderColor else { return nil }
+            return UIColor(cgColor: color)
+        }
+    }
+}
+
+extension UIViewController {
+    func hideKeyboardWhenTappedAround() {
+        let tapGesture = UITapGestureRecognizer(target: self,
+                                                action: #selector(hideKeyboard))
+        view.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc func hideKeyboard() {
+        view.endEditing(true)
+    }
+    
+    
+}
+
 class EditViewController: UIViewController, UIImagePickerControllerDelegate,
-    UINavigationControllerDelegate, UITextViewDelegate {
+UINavigationControllerDelegate, UITextViewDelegate, UIScrollViewDelegate {
     
     let cayenne = UIColor.init(red: 0.498, green: 0, blue: 0, alpha: 1)
     
@@ -20,8 +66,11 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate,
     var isExist = true
     
 
-    @IBOutlet weak var imageViewHeight: NSLayoutConstraint!
-   
+    @IBOutlet weak var editScrollView: UIScrollView!
+    
+    @IBOutlet weak var noteImageView: UIImageView!
+    
+    @IBOutlet weak var noteImageViewHeight: NSLayoutConstraint!
     
     @IBAction func tapImageViewAction(_ sender: Any) {
       
@@ -43,8 +92,7 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate,
     
     var selectedImage : UIImage!
     
-    @IBOutlet weak var imageView: UIImageView!
-
+    
     @IBOutlet weak var textTitle: UITextView!
     
     @IBOutlet weak var textDescription: UITextView!
@@ -60,9 +108,9 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate,
         
         
         if title != "" {
-            if imageView != nil && imageView.image != nil {
+            if noteImageView != nil && noteImageView.image != nil {
                 
-                let imageData = UIImageJPEGRepresentation(imageView.image!, 0.3)
+                let imageData = UIImageJPEGRepresentation(noteImageView.image!, 0.3)
                 
                 if !isExist {
                     
@@ -106,14 +154,25 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate,
         
         super.viewDidLoad()
         
-        // Do any additional setup after loading the view.
+        //editScrollView.contentSize = CGSize(width: self.view.frame.width, height: self.view.frame.height*2)
+        //editScrollView.contentSize = view.bounds.size*2
+        
+        let borderColor: UIColor = UIColor(red: 0.85, green: 0.85, blue: 0.85, alpha: 1.0)
+        textTitle.layer.borderWidth = 0.5
+        textDescription.layer.borderWidth = 0.5
+        textTitle.layer.borderColor = borderColor.cgColor
+        textDescription.layer.borderColor = borderColor.cgColor
+        textTitle.layer.cornerRadius = 5.0
+        textDescription.layer.cornerRadius = 5.0
+        textTitle.tintColor = cayenne
+        textDescription.tintColor = cayenne
         
         let textAttributes = [NSAttributedStringKey.foregroundColor: UIColor.yellow]        
       
         UINavigationBar.appearance(whenContainedInInstancesOf: [UIImagePickerController.self]).backgroundColor = cayenne
         UINavigationBar.appearance(whenContainedInInstancesOf: [UIImagePickerController.self]).isTranslucent = false
         UINavigationBar.appearance(whenContainedInInstancesOf: [UIImagePickerController.self]).barTintColor = cayenne
-        UINavigationBar.appearance(whenContainedInInstancesOf: [UIImagePickerController.self]).tintColor = UIColor.yellow
+        UINavigationBar.appearance(whenContainedInInstancesOf: [UIImagePickerController.self]).tintColor = UIColor.white
         UINavigationBar.appearance(whenContainedInInstancesOf: [UIImagePickerController.self]).titleTextAttributes = textAttributes
         
         
@@ -121,65 +180,132 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate,
         picker.modalPresentationStyle = .overCurrentContext
         textTitle.delegate = self
         textDescription.delegate = self
-      
+        
+        hideKeyboardWhenTappedAround()
+        
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboardTitle), name: Notification.Name.UIKeyboardWillHide, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboardTitle), name: Notification.Name.UIKeyboardWillChangeFrame, object: nil)
+       // notificationCenter.addObserver(self, selector: #selector(adjustForKeyboardDescription), name: Notification.Name.UIKeyboardWillHide, object: nil)
+       // notificationCenter.addObserver(self, selector: #selector(adjustForKeyboardDescription), name: Notification.Name.UIKeyboardWillChangeFrame, object: nil)
+        
     }
+    
+    @objc func adjustForKeyboardTitle(notification: Notification) {
+        let userInfo = notification.userInfo!
+        
+        let keyboardScreenEndFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
+        let keyboardViewEndFrame = view.convert(keyboardScreenEndFrame, from: view.window)
+        
+        if notification.name == Notification.Name.UIKeyboardWillHide {
+            textTitle.contentInset = UIEdgeInsets.zero
+        } else {
+            textTitle.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height, right: 0)
+        }
+        
+        textTitle.scrollIndicatorInsets = textTitle.contentInset
+        
+        let selectedRange = textTitle.selectedRange
+        textTitle.scrollRangeToVisible(selectedRange)
+    }
+    /*
+    @objc func adjustForKeyboardDescription(notification: Notification) {
+        let userInfo = notification.userInfo!
+        
+        let keyboardScreenEndFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
+        let keyboardViewEndFrame = view.convert(keyboardScreenEndFrame, from: view.window)
+        
+        if notification.name == Notification.Name.UIKeyboardWillHide {
+            textDescription.contentInset = UIEdgeInsets.zero
+        } else {
+            textDescription.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height, right: 0)
+        }
+        
+        textDescription.scrollIndicatorInsets = textDescription.contentInset
+        
+        let selectedRange = textDescription.selectedRange
+        textDescription.scrollRangeToVisible(selectedRange)
+    }*/
+    
+    // Call this method somewhere in your view controller setup code.
+    
+    func registerForKeyboardNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWasShown(_:)), name: UIResponder.keyboardDidShowNotification, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillBeHidden(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
+    }
+    
+    // Called when the UIKeyboardDidShowNotification is sent.
+    
+    func keyboardWasShown(_ aNotification: Notification?) {
+        let info = aNotification?.userInfo
+        let kbSize: CGSize? = info?[UIResponder.keyboardFrameEndUserInfoKey]?.cgRectValue.size
+        
+        let contentInsets: UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize?.height, 0.0)
+        scrollView.contentInset = contentInsets
+        scrollView.scrollIndicatorInsets = contentInsets
+        
+        // If active text field is hidden by keyboard, scroll it so it's visible
+        // Your app might not need or want this behavior.
+        let aRect: CGRect = view.frame
+        aRect.size.height -= kbSize?.height ?? 0.0
+        if !aRect.contains(activeField.frame.origin) {
+            scrollView.scrollRectToVisible(activeField.frame, animated: true)
+        }
+    }
+
+    // Called when the UIKeyboardWillHideNotification is sent
+    
+    func keyboardWillBeHidden(_ aNotification: Notification?) {
+        let contentInsets: UIEdgeInsets = .zero
+        scrollView.contentInset = contentInsets
+        scrollView.scrollIndicatorInsets = contentInsets
+    }
+    
+    //Additional methods for tracking the active text field.
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        activeField = textField
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        activeField = nil
+    }
+
+    //Adjusting the frame of the content view and scrolling a field above the keyboard
+    func keyboardWasShown(_ aNotification: Notification?) {
+        let info = aNotification?.userInfo
+        let kbSize: CGSize? = info?[UIResponder.keyboardFrameEndUserInfoKey]?.cgRectValue.size
+        let bkgndRect: CGRect = activeField.superview.frame
+        bkgndRect.size.height += kbSize?.height ?? 0.0
+        activeField.superview.frame = bkgndRect
+        scrollView.setContentOffset(CGPoint(x: 0.0, y: activeField.frame.origin.y - (kbSize?.height ?? 0.0)), animated: true)
+    }
+
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if let title = editNote?.title {
-            if !title.isEmpty {
-                textTitle.text = title
-            } else {
-                textTitle.text = "Add the title"
-                textTitle.textColor = UIColor.lightGray
-            }
-        } else {
-            textTitle.text = "Add the title"
-            textTitle.textColor = UIColor.lightGray
-        }
+        textTitle.text = editNote?.title
         
         if let description = editNote?.text {
-            if !description.isEmpty {
-                textDescription.text = description
-            } else {
-                textDescription.text = "Add the description"
-                textDescription.textColor = UIColor.lightGray
-                
-            }
-        } else {
-            textDescription.text = "Add the description"
-            textDescription.textColor = UIColor.lightGray
-            
+           textDescription.text = description            
         }
         
         if let imageData = editNote?.image {
-            imageView.image = UIImage(data: imageData as Data)
+            noteImageView.image = UIImage(data: imageData as Data)
             img = imageData as Data
         } else {
-            imageViewHeight.constant = 0
+            noteImageViewHeight?.constant = 0
         }
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(true)
+        //NotificationCenter.default.removeObserver(self, selector: #selector(self.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        //NotificationCenter.default.removeObserver(self, selector: #selector(self.keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
-        
-    @objc func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        if let chosenImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            imageViewHeight.constant = 128
-            imageView?.image = chosenImage
-        }
-        //self.performSegue(withIdentifier: "ShowEditView", sender: self)
-        dismiss(animated: true, completion: nil)
-    }
-    
-    private func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        dismiss(animated: true, completion: nil)
-    }
-    
-       
+    /*
     func textViewDidBeginEditing(_ textView: UITextView) {
         if textView.textColor == UIColor.lightGray {
             textView.text = nil
@@ -188,7 +314,7 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate,
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
-       
+        
         if textView.text.isEmpty {
             if textView == textTitle {
                 textView.text = "Add the title"
@@ -199,8 +325,40 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate,
             textView.textColor = UIColor.lightGray
         }
         
+    }*/
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+        
+    @objc func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        if let chosenImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            noteImageViewHeight.constant = 128
+            noteImageView?.image = chosenImage
+        }
+        //self.performSegue(withIdentifier: "ShowEditView", sender: self)
+        dismiss(animated: true, completion: nil)
     }
     
+    private func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+       
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if(text == "\n") {
+            textView.resignFirstResponder()
+            return false
+        }
+        return true
+    }
+    
+    
+    
+    func textViewShouldReturn(_ textView: UITextView) -> Bool {
+        self.view.endEditing(true)
+        return false
+    }
     
     func checkPermission() {
         let status = PHPhotoLibrary.authorizationStatus()
@@ -251,6 +409,8 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate,
         self.present(alert, animated: true)
         
     }
+    
+    
     
     func createNote(id: String, created: Date, title: String, text: String, image: Data?) {
         
