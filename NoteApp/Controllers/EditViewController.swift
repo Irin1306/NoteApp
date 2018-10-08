@@ -42,6 +42,7 @@ import Photos
     }
 }
 
+
 extension UIViewController {
     func hideKeyboardWhenTappedAround() {
         let tapGesture = UITapGestureRecognizer(target: self,
@@ -60,6 +61,8 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate,
 UINavigationControllerDelegate, UITextViewDelegate, UIScrollViewDelegate {
     
     let cayenne = UIColor.init(red: 0.498, green: 0, blue: 0, alpha: 1)
+    
+    var activeView: UITextView?
     
     var editNote: Note?
     var img: Data?
@@ -153,10 +156,7 @@ UINavigationControllerDelegate, UITextViewDelegate, UIScrollViewDelegate {
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        
-        //editScrollView.contentSize = CGSize(width: self.view.frame.width, height: self.view.frame.height*2)
-        //editScrollView.contentSize = view.bounds.size*2
-        
+      
         let borderColor: UIColor = UIColor(red: 0.85, green: 0.85, blue: 0.85, alpha: 1.0)
         textTitle.layer.borderWidth = 0.5
         textDescription.layer.borderWidth = 0.5
@@ -183,104 +183,120 @@ UINavigationControllerDelegate, UITextViewDelegate, UIScrollViewDelegate {
         
         hideKeyboardWhenTappedAround()
         
+        
+       // registerForKeyboardNotifications()
         let notificationCenter = NotificationCenter.default
-        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboardTitle), name: Notification.Name.UIKeyboardWillHide, object: nil)
-        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboardTitle), name: Notification.Name.UIKeyboardWillChangeFrame, object: nil)
-       // notificationCenter.addObserver(self, selector: #selector(adjustForKeyboardDescription), name: Notification.Name.UIKeyboardWillHide, object: nil)
-       // notificationCenter.addObserver(self, selector: #selector(adjustForKeyboardDescription), name: Notification.Name.UIKeyboardWillChangeFrame, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: Notification.Name.UIKeyboardWillHide, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: Notification.Name.UIKeyboardWillChangeFrame, object: nil)
         
     }
-    
-    @objc func adjustForKeyboardTitle(notification: Notification) {
+  
+    @objc func adjustForKeyboard(notification: Notification) {
         let userInfo = notification.userInfo!
-        
+        guard let active = activeView else {return}
         let keyboardScreenEndFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
         let keyboardViewEndFrame = view.convert(keyboardScreenEndFrame, from: view.window)
         
         if notification.name == Notification.Name.UIKeyboardWillHide {
-            textTitle.contentInset = UIEdgeInsets.zero
+            active.contentInset = UIEdgeInsets.zero
         } else {
-            textTitle.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height, right: 0)
+            active.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height, right: 0)
         }
         
-        textTitle.scrollIndicatorInsets = textTitle.contentInset
+        active.scrollIndicatorInsets = active.contentInset
         
-        let selectedRange = textTitle.selectedRange
-        textTitle.scrollRangeToVisible(selectedRange)
+        let selectedRange = active.selectedRange
+        active.scrollRangeToVisible(selectedRange)
     }
+    
     /*
-    @objc func adjustForKeyboardDescription(notification: Notification) {
-        let userInfo = notification.userInfo!
-        
-        let keyboardScreenEndFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
-        let keyboardViewEndFrame = view.convert(keyboardScreenEndFrame, from: view.window)
-        
-        if notification.name == Notification.Name.UIKeyboardWillHide {
-            textDescription.contentInset = UIEdgeInsets.zero
-        } else {
-            textDescription.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height, right: 0)
-        }
-        
-        textDescription.scrollIndicatorInsets = textDescription.contentInset
-        
-        let selectedRange = textDescription.selectedRange
-        textDescription.scrollRangeToVisible(selectedRange)
-    }*/
-    
-    // Call this method somewhere in your view controller setup code.
-    
     func registerForKeyboardNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWasShown(_:)), name: UIResponder.keyboardDidShowNotification, object: nil)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillBeHidden(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.addObserver(self, selector: #selector(keyboardWasShown(_:)), name: Notification.Name.UIKeyboardDidShow, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(keyboardWillHide(sender:)), name: Notification.Name.UIKeyboardWillHide, object: nil)
         
     }
+    @objc func keyboardWillHide(sender: NSNotification) {
+        let userInfo = sender.userInfo
+        let keyboardSize: CGSize = (userInfo![UIKeyboardFrameBeginUserInfoKey]! as AnyObject).cgRectValue.size
+        self.view.frame.origin.y += keyboardSize.height
+    }
     
-    // Called when the UIKeyboardDidShowNotification is sent.
-    
-    func keyboardWasShown(_ aNotification: Notification?) {
-        let info = aNotification?.userInfo
-        let kbSize: CGSize? = info?[UIResponder.keyboardFrameEndUserInfoKey]?.cgRectValue.size
+    @objc func keyboardWasShown(_ aNotification: Notification?) {
+       let userInfo = aNotification?.userInfo
+        let keyboardSize: CGSize = (userInfo![UIKeyboardFrameBeginUserInfoKey]! as AnyObject).cgRectValue.size
+        let offset: CGSize = (userInfo![UIKeyboardFrameEndUserInfoKey]! as AnyObject).cgRectValue.size
         
-        let contentInsets: UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize?.height, 0.0)
-        scrollView.contentInset = contentInsets
-        scrollView.scrollIndicatorInsets = contentInsets
+        if keyboardSize.height == offset.height {
+            UIView.animate(withDuration: 0.1, animations: { () -> Void in
+                self.view.frame.origin.y -= keyboardSize.height
+            })
+        } else {
+            UIView.animate(withDuration: 0.1, animations: { () -> Void in
+                self.view.frame.origin.y += keyboardSize.height - offset.height
+            })
+        }
+    }
+    */
+    
+    /*
+    @objc func keyboardWasShown(_ aNotification: Notification?) {
+        guard let active = activeView else {return}
+        let userInfo = aNotification?.userInfo
+        //let kbSize: CGSize? = (userInfo?[Notification.Name.UIKeyboardWillChangeFrame] as AnyObject).cgRectValue.size
+        
+      //  let contentInsets: UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, (kbSize?.height)!, 0.0)
+      //  editScrollView.contentInset = contentInsets
+     //   editScrollView.scrollIndicatorInsets = contentInsets
         
         // If active text field is hidden by keyboard, scroll it so it's visible
         // Your app might not need or want this behavior.
-        let aRect: CGRect = view.frame
-        aRect.size.height -= kbSize?.height ?? 0.0
-        if !aRect.contains(activeField.frame.origin) {
-            scrollView.scrollRectToVisible(activeField.frame, animated: true)
+       // var aRect: CGRect = view.frame
+       // aRect.size.height -= kbSize?.height ?? 0.0
+     //   if !aRect.contains(active.frame.origin) {
+     //       editScrollView.scrollRectToVisible(active.frame, animated: true)
+    //    }
+       
+        let keyboardScreenEndFrame = (userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
+        let keyboardViewEndFrame = view.convert(keyboardScreenEndFrame, from: view.window)
+        
+        if aNotification?.name == Notification.Name.UIKeyboardWillHide {
+            active.contentInset = UIEdgeInsets.zero
+        } else {
+            active.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height, right: 0)
         }
+        
+        active.scrollIndicatorInsets = active.contentInset
+        
+        let selectedRange = active.selectedRange
+        active.scrollRangeToVisible(selectedRange)
+        
+       // var bkgndRect: CGRect = active.superview!.frame
+       // bkgndRect.size.height += kbSize?.height ?? 0.0
+       // active.superview?.frame = bkgndRect
+       // editScrollView.setContentOffset(CGPoint(x: 0.0, y: active.frame.origin.y - (kbSize?.height ?? 0.0)), animated: true)
+        
     }
-
+ */
+/*
     // Called when the UIKeyboardWillHideNotification is sent
-    
-    func keyboardWillBeHidden(_ aNotification: Notification?) {
+    @objc func keyboardWillBeHidden(_ aNotification: Notification?) {
         let contentInsets: UIEdgeInsets = .zero
-        scrollView.contentInset = contentInsets
-        scrollView.scrollIndicatorInsets = contentInsets
+        editScrollView.contentInset = contentInsets
+        editScrollView.scrollIndicatorInsets = contentInsets
     }
+ */
     
-    //Additional methods for tracking the active text field.
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        activeField = textField
-    }
     
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        activeField = nil
-    }
-
-    //Adjusting the frame of the content view and scrolling a field above the keyboard
-    func keyboardWasShown(_ aNotification: Notification?) {
-        let info = aNotification?.userInfo
-        let kbSize: CGSize? = info?[UIResponder.keyboardFrameEndUserInfoKey]?.cgRectValue.size
-        let bkgndRect: CGRect = activeField.superview.frame
-        bkgndRect.size.height += kbSize?.height ?? 0.0
-        activeField.superview.frame = bkgndRect
-        scrollView.setContentOffset(CGPoint(x: 0.0, y: activeField.frame.origin.y - (kbSize?.height ?? 0.0)), animated: true)
-    }
+     func textViewDidBeginEditing(_ textView: UITextView) {
+        activeView = textView
+     }
+     
+     func textViewDidEndEditing(_ textView: UITextView) {
+        activeView = nil
+     }
+    
+ 
 
     
     override func viewWillAppear(_ animated: Bool) {
@@ -300,32 +316,7 @@ UINavigationControllerDelegate, UITextViewDelegate, UIScrollViewDelegate {
         }
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(true)
-        //NotificationCenter.default.removeObserver(self, selector: #selector(self.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        //NotificationCenter.default.removeObserver(self, selector: #selector(self.keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-    }
-    /*
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.textColor == UIColor.lightGray {
-            textView.text = nil
-            textView.textColor = UIColor.black
-        }
-    }
-    
-    func textViewDidEndEditing(_ textView: UITextView) {
-        
-        if textView.text.isEmpty {
-            if textView == textTitle {
-                textView.text = "Add the title"
-            } else if textView == textDescription {
-                textView.text = "Add the description"
-                
-            }
-            textView.textColor = UIColor.lightGray
-        }
-        
-    }*/
+  
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

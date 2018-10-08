@@ -29,6 +29,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }*/
         UIApplication.shared.statusBarStyle = .lightContent
         
+        window?.layer.cornerRadius = 20.0
+        window?.layer.masksToBounds = true
+        window?.layer.isOpaque = false
+        
         return true
     }
 
