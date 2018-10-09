@@ -140,7 +140,9 @@ UINavigationControllerDelegate, UITextViewDelegate, UIScrollViewDelegate {
             navigationController?.popViewController(animated: true)
             
         } else {
-            //
+            AlertService.addAlert(in: self){(obj) in
+                print(obj)
+            }
         }
         
         

@@ -12,6 +12,7 @@
 		CE141BE52151129D0004153C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE141BE42151129D0004153C /* Assets.xcassets */; };
 		CE141BE82151129D0004153C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE141BE62151129D0004153C /* LaunchScreen.storyboard */; };
 		CE141BF621512BA00004153C /* EditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE141BF521512BA00004153C /* EditViewController.swift */; };
+		CE757DC2216C87FF00F82492 /* AlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE757DC1216C87FF00F82492 /* AlertService.swift */; };
 		CEC3B00D21679D2C000B650B /* NotesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC3B00C21679D2C000B650B /* NotesViewController.swift */; };
 		CEC3B04A21691694000B650B /* NoteApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = CEC3B04821691694000B650B /* NoteApp.xcdatamodeld */; };
 		CEC3B04D216916FD000B650B /* Note+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC3B04B216916FD000B650B /* Note+CoreDataClass.swift */; };
@@ -28,6 +29,7 @@
 		CE141BE72151129D0004153C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CE141BE92151129D0004153C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CE141BF521512BA00004153C /* EditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditViewController.swift; sourceTree = "<group>"; };
+		CE757DC1216C87FF00F82492 /* AlertService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertService.swift; sourceTree = "<group>"; };
 		CEC3B00C21679D2C000B650B /* NotesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesViewController.swift; sourceTree = "<group>"; };
 		CEC3B04921691694000B650B /* NoteApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = NoteApp.xcdatamodel; sourceTree = "<group>"; };
 		CEC3B04B216916FD000B650B /* Note+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Note+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -102,6 +104,7 @@
 			isa = PBXGroup;
 			children = (
 				CEFF86C2215E7653008AEE3B /* PersistentService.swift */,
+				CE757DC1216C87FF00F82492 /* AlertService.swift */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -184,6 +187,7 @@
 				CEC3B00D21679D2C000B650B /* NotesViewController.swift in Sources */,
 				CEC3B04A21691694000B650B /* NoteApp.xcdatamodeld in Sources */,
 				CE141BDE2151129B0004153C /* AppDelegate.swift in Sources */,
+				CE757DC2216C87FF00F82492 /* AlertService.swift in Sources */,
 				CEDA3488215BB5A60059060C /* ImageViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
