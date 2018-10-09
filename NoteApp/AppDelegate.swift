@@ -8,6 +8,8 @@
 
 import UIKit
 import CoreData
+//import IQKeyboardManager
+
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -29,9 +31,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }*/
         UIApplication.shared.statusBarStyle = .lightContent
         
-        window?.layer.cornerRadius = 20.0
-        window?.layer.masksToBounds = true
-        window?.layer.isOpaque = false
+        //window?.layer.cornerRadius = 20.0
+        //window?.layer.masksToBounds = true
+        //window?.layer.isOpaque = false
+        
+        //IQKeyboardManager.sharedManager().enable = true
+        //IQKeyboardManager.sharedManager().enableAutoToolbar = false
         
         return true
     }

@@ -13,10 +13,10 @@ class AlertService {
     
     private init() {}
     
-    static func addAlert(in vc: UIViewController,
+    static func addAlert(in vc: UIViewController, withTitle title: String, withMessage message: String,
                          complition: @escaping () -> Void) {
         
-        let alert = UIAlertController(title: "Photo", message: "Photo access is necessary to select photos", preferredStyle: .alert)
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
         // Add "OK" Button to alert, pressing it will bring you to the settings app
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
