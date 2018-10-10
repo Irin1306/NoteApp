@@ -89,6 +89,8 @@ extension UIViewController {
     
 }
 
+
+
 class EditViewController: UIViewController, UIImagePickerControllerDelegate,
 UINavigationControllerDelegate, UITextViewDelegate, UIScrollViewDelegate {
     
@@ -118,6 +120,7 @@ UINavigationControllerDelegate, UITextViewDelegate, UIScrollViewDelegate {
     @IBOutlet weak var noteImageView: UIImageView!
     
     @IBOutlet weak var noteImageViewHeight: NSLayoutConstraint!
+    
     
     // MARK: Privates
     
@@ -199,7 +202,9 @@ UINavigationControllerDelegate, UITextViewDelegate, UIScrollViewDelegate {
             
         } else {
             AlertService.addAlert(in: self, withTitle: "NoteApp", withMessage: "Add title to save note"){() in
-                //print("complition")
+                
+                self.textTitle.becomeFirstResponder()
+                
             }
         }
         
@@ -245,7 +250,7 @@ UINavigationControllerDelegate, UITextViewDelegate, UIScrollViewDelegate {
 
         //actions
         hideKeyboardWhenTappedAround()
-        
+       
         notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: Notification.Name.UIKeyboardWillHide, object: nil)
         notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: Notification.Name.UIKeyboardWillChangeFrame, object: nil)
         
@@ -345,16 +350,15 @@ UINavigationControllerDelegate, UITextViewDelegate, UIScrollViewDelegate {
         let userInfo = notification.userInfo!
         let keyboardScreenEndFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
         let keyboardViewEndFrame = view.convert(keyboardScreenEndFrame, from: view.window)
-       
-        keyboardHeight = keyboardViewEndFrame.height
         
+        keyboardHeight = keyboardViewEndFrame.height
+       
         if notification.name == Notification.Name.UIKeyboardWillHide {
-            activeView?.contentInset = UIEdgeInsets.zero
-         
+             activeView?.contentInset = UIEdgeInsets.zero           
             
         } else {
             activeView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height, right: 0)
-          
+         
         }
         
        activeView?.scrollIndicatorInsets = (activeView?.contentInset)!
@@ -383,7 +387,9 @@ UINavigationControllerDelegate, UITextViewDelegate, UIScrollViewDelegate {
     
     func textViewDidBeginEditing(_ textView: UITextView) {
         activeView = textView
-        let textViewRealYPosition = textView.frame.origin.y - keyboardHeight + textView.frame.height
+        let textViewRealYPosition = textView.frame.origin.y + textView.frame.height - keyboardHeight
+       // let textViewRealYPosition = textView.bounds.size.height - textView.contentSize.height - textView.frame.height
+       // let textViewRealYPosition = view.bounds.size.height - keyboardHeight
         if textView == textDescription {
             editScrollView.setContentOffset(CGPoint(x: 0, y: textViewRealYPosition), animated: true)
            
