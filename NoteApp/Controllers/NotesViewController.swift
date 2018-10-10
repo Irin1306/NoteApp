@@ -23,6 +23,7 @@ class NotesTableViewCell: UITableViewCell {
     
 }
 
+
 class NotesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
     
     
@@ -137,6 +138,20 @@ class NotesViewController: UIViewController, UITableViewDataSource, UITableViewD
         
     }
     
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.endEditing(true)
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.endEditing(true)
+    }
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        searchBar.endEditing(true)
+    }
+    
+    
+    
     // MARK: - Private
     private func setupUI() {        
         //names
@@ -161,6 +176,7 @@ class NotesViewController: UIViewController, UITableViewDataSource, UITableViewD
         //states
         
         //actions
+        hideKeyboardWhenTappedAround()
         
     }
     

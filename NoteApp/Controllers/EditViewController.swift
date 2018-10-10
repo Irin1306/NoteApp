@@ -74,21 +74,21 @@ import Photos
     }
 }
 
-
 extension UIViewController {
     func hideKeyboardWhenTappedAround() {
-        let tapGesture = UITapGestureRecognizer(target: self,
+        let tap = UITapGestureRecognizer(target: self,
                                                 action: #selector(hideKeyboard))
-        view.addGestureRecognizer(tapGesture)
+        
+        tap.cancelsTouchesInView=false
+        view.addGestureRecognizer(tap)
     }
+      @objc func hideKeyboard() {
     
-    @objc func hideKeyboard() {
-        view.endEditing(true)
+            view.endEditing(true)
+      
     }
-    
     
 }
-
 
 
 class EditViewController: UIViewController, UIImagePickerControllerDelegate,
@@ -96,6 +96,7 @@ UINavigationControllerDelegate, UITextViewDelegate, UIScrollViewDelegate {
     
    
     // MARK: Publics
+    @IBInspectable var offsetMultiplier: CGFloat = 0.85
     let cayenne = UIColor.init(red: 0.498, green: 0, blue: 0, alpha: 1)
    
     var activeView: UITextView?
@@ -118,9 +119,8 @@ UINavigationControllerDelegate, UITextViewDelegate, UIScrollViewDelegate {
     @IBOutlet weak var textDescription: UITextView!
     
     @IBOutlet weak var noteImageView: UIImageView!
-    
+   
     @IBOutlet weak var noteImageViewHeight: NSLayoutConstraint!
-    
     
     // MARK: Privates
     
@@ -132,9 +132,10 @@ UINavigationControllerDelegate, UITextViewDelegate, UIScrollViewDelegate {
 
     // MARK: - View LifeCycle
     override func viewDidLoad() {
+        
         super.viewDidLoad()
         setupUI()
-        
+       
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -156,6 +157,20 @@ UINavigationControllerDelegate, UITextViewDelegate, UIScrollViewDelegate {
             
         }
     }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        //
+        
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillChangeFrame , object: nil)
+        NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide , object: nil)
+        
+    }
+    
+    
     
     // MARK: - Action Handlers
     @IBAction func onShowImageAction(_ sender: Any) {
@@ -233,7 +248,7 @@ UINavigationControllerDelegate, UITextViewDelegate, UIScrollViewDelegate {
         textTitle.tintColor = cayenne
         textDescription.tintColor = cayenne
         
-        let textAttributes = [NSAttributedStringKey.foregroundColor: UIColor.yellow]        
+        let textAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
         UINavigationBar.appearance(whenContainedInInstancesOf: [UIImagePickerController.self]).backgroundColor = cayenne
         UINavigationBar.appearance(whenContainedInInstancesOf: [UIImagePickerController.self]).isTranslucent = false
         UINavigationBar.appearance(whenContainedInInstancesOf: [UIImagePickerController.self]).barTintColor = cayenne
@@ -250,17 +265,11 @@ UINavigationControllerDelegate, UITextViewDelegate, UIScrollViewDelegate {
 
         //actions
         hideKeyboardWhenTappedAround()
-       
-        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: Notification.Name.UIKeyboardWillHide, object: nil)
-        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: Notification.Name.UIKeyboardWillChangeFrame, object: nil)
         
+        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: Notification.Name.UIKeyboardWillChangeFrame, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: Notification.Name.UIKeyboardWillHide, object: nil)
     }
     
-    deinit {
-        notificationCenter.removeObserver(self, name: Notification.Name.UIKeyboardWillHide, object: nil)
-        notificationCenter.removeObserver(self, name: Notification.Name.UIKeyboardWillChangeFrame, object: nil)
-        
-    }
     
     private func checkPermission() {
         let status = PHPhotoLibrary.authorizationStatus()
@@ -347,28 +356,24 @@ UINavigationControllerDelegate, UITextViewDelegate, UIScrollViewDelegate {
     
     //keyboard
     @objc func adjustForKeyboard(notification: Notification) {
-        let userInfo = notification.userInfo!
-        let keyboardScreenEndFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
-        let keyboardViewEndFrame = view.convert(keyboardScreenEndFrame, from: view.window)
         
-        keyboardHeight = keyboardViewEndFrame.height
-       
-        if notification.name == Notification.Name.UIKeyboardWillHide {
-             activeView?.contentInset = UIEdgeInsets.zero           
+        guard let keyboardFrame = notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue else {
+            return
+        }
+        if #available(iOS 11.0, *) {
+            keyboardHeight = view.convert(keyboardFrame.cgRectValue, from: view.window).height - self.view.safeAreaInsets.bottom
             
         } else {
-            activeView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height, right: 0)
-         
+            keyboardHeight = view.convert(keyboardFrame.cgRectValue, from: view.window).height
         }
-        
-       activeView?.scrollIndicatorInsets = (activeView?.contentInset)!
-       let selectedRange = activeView?.selectedRange
-       activeView?.scrollRangeToVisible(selectedRange!)
+       
     }
+
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if(text == "\n") {
-            textView.resignFirstResponder()
+            
+            textViewShouldReturn(textView)
             return false
         }
         return true
@@ -377,28 +382,34 @@ UINavigationControllerDelegate, UITextViewDelegate, UIScrollViewDelegate {
     func textViewShouldReturn(_ textView: UITextView) -> Bool {
         if textView.tag == 0 {
             textDescription.becomeFirstResponder()
+            return false
+            
         } else if textView.tag == 1 {
             textView.resignFirstResponder()
+            return false
+            
         }
-        //self.view.endEditing(true)
-        //return false
-       return true
+         activeView = nil
+         return true
     }
     
     func textViewDidBeginEditing(_ textView: UITextView) {
+    
         activeView = textView
-        let textViewRealYPosition = textView.frame.origin.y + textView.frame.height - keyboardHeight
-       // let textViewRealYPosition = textView.bounds.size.height - textView.contentSize.height - textView.frame.height
-       // let textViewRealYPosition = view.bounds.size.height - keyboardHeight
+        //keyboardHeight may not be ready
+        let textViewRealYPosition = keyboardHeight > 200 ? textView.frame.origin.y + textView.frame.height - keyboardHeight * offsetMultiplier :
+            textView.frame.origin.y + textView.frame.height - 200 * offsetMultiplier
+        
         if textView == textDescription {
-            editScrollView.setContentOffset(CGPoint(x: 0, y: textViewRealYPosition), animated: true)
-           
+            print(textViewRealYPosition)
+           editScrollView.setContentOffset(CGPoint(x: 0, y: textViewRealYPosition), animated: true)
         }
+       
         
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
-        activeView = nil
+      
         editScrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
         
     }
